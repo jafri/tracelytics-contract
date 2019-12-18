@@ -1,0 +1,27 @@
+{
+  "name": "tracelytics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@jafri/eosjs2": "^20.0.1-e34c16e.179",
+    "elliptic": "^6.5.2",
+    "lamington": "^1.0.0-alpha.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eosjs": "^20.0.0",
+    "json": "^9.0.6",
+    "mocha": "^6.2.2",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "test": "mocha **/*.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

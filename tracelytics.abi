@@ -1,0 +1,722 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [
+        {
+            "new_type_name": "all_type",
+            "type": "variant_int8_bool_int8_uint8_int16_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset"
+        }
+    ],
+    "structs": [
+        {
+            "name": "Batch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "batch_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "batch_id",
+                    "type": "string"
+                },
+                {
+                    "name": "user_id",
+                    "type": "string"
+                },
+                {
+                    "name": "machine_id",
+                    "type": "string"
+                },
+                {
+                    "name": "date",
+                    "type": "string"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "Cargo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "product_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "quantity",
+                    "type": "uint64"
+                },
+                {
+                    "name": "delta",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "Delivery",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "delivery_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "delivery_id",
+                    "type": "string"
+                },
+                {
+                    "name": "shipper_id",
+                    "type": "string"
+                },
+                {
+                    "name": "driver_id",
+                    "type": "string"
+                },
+                {
+                    "name": "start_time",
+                    "type": "string"
+                },
+                {
+                    "name": "end_time",
+                    "type": "string"
+                },
+                {
+                    "name": "status",
+                    "type": "string"
+                },
+                {
+                    "name": "cargo",
+                    "type": "pair_checksum256_Cargo[]"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "Machine",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "machine_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "machine_id",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "site",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "Product",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "product_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "product_id",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "ProductInstance",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "productins_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "productins_id",
+                    "type": "string"
+                },
+                {
+                    "name": "site_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "site_id",
+                    "type": "string"
+                },
+                {
+                    "name": "product",
+                    "type": "string"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "Site",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "site_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "site_id",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "user_checksum",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "user_id",
+                    "type": "string"
+                },
+                {
+                    "name": "key",
+                    "type": "public_key"
+                },
+                {
+                    "name": "nonce",
+                    "type": "uint64"
+                },
+                {
+                    "name": "permissions",
+                    "type": "string[]"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "delbatch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "deldelivery",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "delmachine",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "delprodins",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "delproduct",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "delsite",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "deluser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "editbatch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "editdelivery",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                },
+                {
+                    "name": "cargo",
+                    "type": "pair_checksum256_Cargo[]"
+                }
+            ]
+        },
+        {
+            "name": "editmachine",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "editprodins",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "editproduct",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "editsite",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "edituser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newbatch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newdelivery",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                },
+                {
+                    "name": "cargo",
+                    "type": "pair_checksum256_Cargo[]"
+                }
+            ]
+        },
+        {
+            "name": "newmachine",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newprodins",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newproduct",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newsite",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "newuser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
+        {
+            "name": "pair_checksum256_Cargo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "checksum256"
+                },
+                {
+                    "name": "value",
+                    "type": "Cargo"
+                }
+            ]
+        },
+        {
+            "name": "pair_string_all_type",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "string"
+                },
+                {
+                    "name": "value",
+                    "type": "all_type"
+                }
+            ]
+        },
+        {
+            "name": "push",
+            "base": "",
+            "fields": [
+                {
+                    "name": "verifydata",
+                    "type": "string"
+                },
+                {
+                    "name": "sig",
+                    "type": "signature"
+                },
+                {
+                    "name": "pk",
+                    "type": "public_key"
+                },
+                {
+                    "name": "username",
+                    "type": "name"
+                },
+                {
+                    "name": "company",
+                    "type": "name"
+                },
+                {
+                    "name": "entity",
+                    "type": "string"
+                },
+                {
+                    "name": "action",
+                    "type": "string"
+                },
+                {
+                    "name": "args",
+                    "type": "pair_string_all_type[]"
+                },
+                {
+                    "name": "metadata",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "delbatch",
+            "type": "delbatch",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deldelivery",
+            "type": "deldelivery",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delmachine",
+            "type": "delmachine",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delprodins",
+            "type": "delprodins",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delproduct",
+            "type": "delproduct",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delsite",
+            "type": "delsite",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deluser",
+            "type": "deluser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editbatch",
+            "type": "editbatch",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editdelivery",
+            "type": "editdelivery",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editmachine",
+            "type": "editmachine",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editprodins",
+            "type": "editprodins",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editproduct",
+            "type": "editproduct",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editsite",
+            "type": "editsite",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "edituser",
+            "type": "edituser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newbatch",
+            "type": "newbatch",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newdelivery",
+            "type": "newdelivery",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newmachine",
+            "type": "newmachine",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newprodins",
+            "type": "newprodins",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newproduct",
+            "type": "newproduct",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newsite",
+            "type": "newsite",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newuser",
+            "type": "newuser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "push",
+            "type": "push",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "batch",
+            "type": "Batch",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "delivery",
+            "type": "Delivery",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "machine",
+            "type": "Machine",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "product",
+            "type": "Product",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "productins",
+            "type": "ProductInstance",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "site",
+            "type": "Site",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "user",
+            "type": "User",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": [
+        {
+            "name": "variant_int8_bool_int8_uint8_int16_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset",
+            "types": ["int8","bool","int8","uint8","int16","uint16","int32","uint32","int64","uint64","int128","uint128","varint32","varuint32","float32","float64","float128","time_point","time_point_sec","name","string","block_timestamp_type","checksum160","checksum256","checksum512","public_key","signature","symbol","symbol_code","asset","extended_asset"]
+        }
+    ]
+}
