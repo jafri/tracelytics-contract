@@ -125,33 +125,6 @@ tracelytics/fast:
 	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/build
 .PHONY : tracelytics/fast
 
-src/batches.obj: src/batches.cpp.obj
-
-.PHONY : src/batches.obj
-
-# target to build an object file
-src/batches.cpp.obj:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/batches.cpp.obj
-.PHONY : src/batches.cpp.obj
-
-src/batches.i: src/batches.cpp.i
-
-.PHONY : src/batches.i
-
-# target to preprocess a source file
-src/batches.cpp.i:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/batches.cpp.i
-.PHONY : src/batches.cpp.i
-
-src/batches.s: src/batches.cpp.s
-
-.PHONY : src/batches.s
-
-# target to generate assembly for a file
-src/batches.cpp.s:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/batches.cpp.s
-.PHONY : src/batches.cpp.s
-
 src/deliveries.obj: src/deliveries.cpp.obj
 
 .PHONY : src/deliveries.obj
@@ -178,6 +151,60 @@ src/deliveries.s: src/deliveries.cpp.s
 src/deliveries.cpp.s:
 	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.s
 .PHONY : src/deliveries.cpp.s
+
+src/items.obj: src/items.cpp.obj
+
+.PHONY : src/items.obj
+
+# target to build an object file
+src/items.cpp.obj:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj
+.PHONY : src/items.cpp.obj
+
+src/items.i: src/items.cpp.i
+
+.PHONY : src/items.i
+
+# target to preprocess a source file
+src/items.cpp.i:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.i
+.PHONY : src/items.cpp.i
+
+src/items.s: src/items.cpp.s
+
+.PHONY : src/items.s
+
+# target to generate assembly for a file
+src/items.cpp.s:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.s
+.PHONY : src/items.cpp.s
+
+src/logInventory.obj: src/logInventory.cpp.obj
+
+.PHONY : src/logInventory.obj
+
+# target to build an object file
+src/logInventory.cpp.obj:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj
+.PHONY : src/logInventory.cpp.obj
+
+src/logInventory.i: src/logInventory.cpp.i
+
+.PHONY : src/logInventory.i
+
+# target to preprocess a source file
+src/logInventory.cpp.i:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.i
+.PHONY : src/logInventory.cpp.i
+
+src/logInventory.s: src/logInventory.cpp.s
+
+.PHONY : src/logInventory.s
+
+# target to generate assembly for a file
+src/logInventory.cpp.s:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.s
+.PHONY : src/logInventory.cpp.s
 
 src/machines.obj: src/machines.cpp.obj
 
@@ -206,32 +233,32 @@ src/machines.cpp.s:
 	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.s
 .PHONY : src/machines.cpp.s
 
-src/productInstances.obj: src/productInstances.cpp.obj
+src/processes.obj: src/processes.cpp.obj
 
-.PHONY : src/productInstances.obj
+.PHONY : src/processes.obj
 
 # target to build an object file
-src/productInstances.cpp.obj:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/productInstances.cpp.obj
-.PHONY : src/productInstances.cpp.obj
+src/processes.cpp.obj:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj
+.PHONY : src/processes.cpp.obj
 
-src/productInstances.i: src/productInstances.cpp.i
+src/processes.i: src/processes.cpp.i
 
-.PHONY : src/productInstances.i
+.PHONY : src/processes.i
 
 # target to preprocess a source file
-src/productInstances.cpp.i:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/productInstances.cpp.i
-.PHONY : src/productInstances.cpp.i
+src/processes.cpp.i:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.i
+.PHONY : src/processes.cpp.i
 
-src/productInstances.s: src/productInstances.cpp.s
+src/processes.s: src/processes.cpp.s
 
-.PHONY : src/productInstances.s
+.PHONY : src/processes.s
 
 # target to generate assembly for a file
-src/productInstances.cpp.s:
-	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/productInstances.cpp.s
-.PHONY : src/productInstances.cpp.s
+src/processes.cpp.s:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.s
+.PHONY : src/processes.cpp.s
 
 src/products.obj: src/products.cpp.obj
 
@@ -259,6 +286,33 @@ src/products.s: src/products.cpp.s
 src/products.cpp.s:
 	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.s
 .PHONY : src/products.cpp.s
+
+src/recipes.obj: src/recipes.cpp.obj
+
+.PHONY : src/recipes.obj
+
+# target to build an object file
+src/recipes.cpp.obj:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj
+.PHONY : src/recipes.cpp.obj
+
+src/recipes.i: src/recipes.cpp.i
+
+.PHONY : src/recipes.i
+
+# target to preprocess a source file
+src/recipes.cpp.i:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.i
+.PHONY : src/recipes.cpp.i
+
+src/recipes.s: src/recipes.cpp.s
+
+.PHONY : src/recipes.s
+
+# target to generate assembly for a file
+src/recipes.cpp.s:
+	cd /Users/jafri/eosio.contracts/contracts && $(MAKE) -f tracelytics/CMakeFiles/tracelytics.dir/build.make tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.s
+.PHONY : src/recipes.cpp.s
 
 src/sites.obj: src/sites.cpp.obj
 
@@ -377,21 +431,27 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... tracelytics"
-	@echo "... src/batches.obj"
-	@echo "... src/batches.i"
-	@echo "... src/batches.s"
 	@echo "... src/deliveries.obj"
 	@echo "... src/deliveries.i"
 	@echo "... src/deliveries.s"
+	@echo "... src/items.obj"
+	@echo "... src/items.i"
+	@echo "... src/items.s"
+	@echo "... src/logInventory.obj"
+	@echo "... src/logInventory.i"
+	@echo "... src/logInventory.s"
 	@echo "... src/machines.obj"
 	@echo "... src/machines.i"
 	@echo "... src/machines.s"
-	@echo "... src/productInstances.obj"
-	@echo "... src/productInstances.i"
-	@echo "... src/productInstances.s"
+	@echo "... src/processes.obj"
+	@echo "... src/processes.i"
+	@echo "... src/processes.s"
 	@echo "... src/products.obj"
 	@echo "... src/products.i"
 	@echo "... src/products.s"
+	@echo "... src/recipes.obj"
+	@echo "... src/recipes.i"
+	@echo "... src/recipes.s"
 	@echo "... src/sites.obj"
 	@echo "... src/sites.i"
 	@echo "... src/sites.s"

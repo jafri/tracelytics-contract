@@ -2,116 +2,146 @@
 
 /**
  * Create New User
- *
- * Params:
- *  - company (name)
- *  - userId (string)
- *  - key (string) (optional)
- *  - permissions (string) (optional)
  **/
-void tracelytics::newuser (std::map<std::string, all_type> args) {
+void tracelytics::newuser (
+    const std::string& user,
+    const std::string& company,
+    const std::string& userId,
+    const std::vector<std::string>& permissions,
+    const std::vector<std::string>& certifications,
+    const time_point& timestamp,
+    const std::map<std::string, all_type>& data,
+
+    const optional<public_key>& key,
+    const optional<std::string>& firstName,
+    const optional<std::string>& lastName,
+    const optional<std::string>& email,
+    const optional<std::string>& description,
+    const optional<std::string>& version
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company      =  std::get_if<name>       (  &args["company"] );
-    auto userId       =  std::get_if<std::string>(  &args["userId"] );
-    auto key          =  std::get_if<public_key> (  &args["key"] );
-    auto permissions  =  std::get_if<std::string>(  &args["permissions"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(userId  != nullptr, "user id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!userId.empty(),  "user id is missing.");
 
     // Generate checksum from userId
-    checksum256 user_checksum = sha256(userId->c_str(), userId->size());
+    std::string user_checksum_string = userId;
+    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user doesnt exist
-    user_table users(get_self(), company->value);
+    user_table users(get_self(), get_self().value);
     auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto user = users_bychecksum.find(user_checksum);
-    check(user == users_bychecksum.end(), "user already exists");
+    auto existing_user = users_bychecksum.find(user_checksum);
+    check(existing_user == users_bychecksum.end(), "user already exists");
 
     // Create new user
     users.emplace(get_self(), [&](auto& u) {
-        u.id = users.available_primary_key();
-        u.user_checksum = user_checksum;
-        u.user_id = *userId;
+        u.index          = users.available_primary_key();
+        u.createdBy      = user;
+        u.updatedBy      = user;
+        u.createdAt      = timestamp;
+        u.updatedAt      = timestamp;
+
+        u.company        = company;
+        u.userId         = userId;
+        u.permissions    = permissions;
+        u.certifications = certifications;
 
         // Optional
-        if (key         != nullptr) u.key         = *key;
-        if (permissions != nullptr) u.permissions = split(*permissions, ",");
+        if (firstName)   u.firstName   = *firstName;
+        if (lastName)    u.lastName    = *lastName;
+        if (email)       u.email       = *email;
+        if (key)         u.key         = *key;
+        if (description) u.description = *description;
+        if (version)     u.version     = *version;
     });
 }
 
 /**
  * Edit User
- *
- * Params:
- *  - company (name)
- *  - userId (string)
- *  - key (string) (optional)
- *  - permissions (string) (optional)
  **/
-void tracelytics::edituser (std::map<std::string, all_type> args) {
+void tracelytics::edituser (
+    const std::string& user,
+    const std::string& company,
+    const std::string& userId,
+    const std::vector<std::string>& permissions,
+    const std::vector<std::string>& certifications,
+    const time_point& timestamp,
+    const std::map<std::string, all_type>& data,
+
+    const optional<public_key>& key,
+    const optional<std::string>& firstName,
+    const optional<std::string>& lastName,
+    const optional<std::string>& email,
+    const optional<std::string>& description,
+    const optional<std::string>& version
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company     = std::get_if<name>       ( &args["company"] );
-    auto userId      = std::get_if<std::string>( &args["userId"] );
-    auto key         = std::get_if<public_key> ( &args["key"] );
-    auto permissions = std::get_if<std::string>( &args["permissions"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(userId != nullptr, "user id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!userId.empty(),  "user id is missing.");
 
     // Generate checksum from userId
-    checksum256 user_checksum = sha256( userId->c_str(), userId->size() );
+    std::string user_checksum_string = userId;
+    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user exists
-    user_table users(get_self(), company->value);
+    user_table users(get_self(), get_self().value);
     auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto user = users_bychecksum.find( user_checksum );
-    check(user != users_bychecksum.end(), "user does not exist.");
+    auto existing_user = users_bychecksum.find( user_checksum );
+    check(existing_user != users_bychecksum.end(), "user does not exist.");
 
     // Edit User
-    users_bychecksum.modify(user, get_self(), [&](auto& u) {
+    users_bychecksum.modify(existing_user, get_self(), [&](auto& u) {
+        u.updatedBy      = user;
+        u.updatedAt      = timestamp;
+
+        u.permissions    = permissions;
+        u.certifications = certifications;
+
         // Optional
-        if (key         != nullptr) u.key         = *key;
-        if (permissions != nullptr) u.permissions = split(*permissions, ",");
+        if (key)         u.key         = *key;
+        if (firstName)   u.firstName   = *firstName;
+        if (lastName)    u.lastName    = *lastName;
+        if (email)       u.email       = *email;
+        if (description) u.description = *description;
+        if (version)     u.version     = *version;
     });
 }
 
 /**
  * Delete User
- *
- * Params:
- *  - company (name)
- *  - userId (string)
  **/
-void tracelytics::deluser (std::map<std::string, all_type> args) {
+void tracelytics::deluser (
+    const std::string& user,
+    const std::string& company,
+    const std::string& userId,
+    const time_point&  timestamp
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company = std::get_if<name>       ( &args["company"] );
-    auto userId  = std::get_if<std::string>( &args["userId"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(userId != nullptr, "user id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!userId.empty(),  "user id is missing.");
 
     // Generate checksum from userId
-    checksum256 user_checksum = sha256(userId->c_str(), userId->size());
+    std::string user_checksum_string = userId;
+    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user exists
-    user_table users(get_self(), company->value);
+    user_table users(get_self(), get_self().value);
     auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto user = users_bychecksum.find(user_checksum);
-    check(user != users_bychecksum.end(), "user does not exist.");
+    auto existing_user = users_bychecksum.find(user_checksum);
+    check(existing_user != users_bychecksum.end(), "user does not exist.");
 
     // Delete user
-    users_bychecksum.erase(user);
+    users_bychecksum.erase(existing_user);
 }

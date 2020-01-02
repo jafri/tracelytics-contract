@@ -19,9 +19,11 @@
     "node-fetch": "^2.6.0"
   },
   "scripts": {
-    "test": "mocha **/*.spec.js"
+    "test": "mocha **/*.spec.js",
+    "deploy": "node test/setup.js",
+    "all": "make -j && npm run deploy && npm run test"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "PROPRIETARY"
 }

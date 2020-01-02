@@ -1,12 +1,14 @@
 add_contract(tracelytics tracelytics
    ${CMAKE_CURRENT_SOURCE_DIR}/src/tracelytics.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/src/productInstances.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/src/users.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/src/batches.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/deliveries.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/items.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/logInventory.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/machines.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/src/sites.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/processes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/products.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/recipes.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/sites.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/users.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.cpp
 )
 

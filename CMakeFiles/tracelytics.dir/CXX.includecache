@@ -6,11 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/deliveries.cpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/utils.cpp
 tracelytics/tracelytics.hpp
 /Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
 
 tracelytics/include/tracelytics/tracelytics.hpp
+tracelytics/types.hpp
+-
+
+tracelytics/include/tracelytics/types.hpp
 eosio/eosio.hpp
 -
 eosio/privileged.hpp
@@ -18,6 +22,10 @@ eosio/privileged.hpp
 eosio/crypto.hpp
 -
 eosio/asset.hpp
+-
+eosio/transaction.hpp
+-
+eosio/time.hpp
 -
 string
 -

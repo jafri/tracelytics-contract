@@ -2,106 +2,121 @@
 
 /**
  * Create New Site
- *
- * Params:
- *  - company (name)
- *  - siteId (string)
- *  - name (string) (optional)
  **/
-void tracelytics::newsite (std::map<std::string, all_type> args) {
+void tracelytics::newsite (
+    const std::string& user,
+    const std::string& company,
+    const std::string& siteId,
+    const time_point& timestamp,
+    const std::map<std::string, all_type>& data,
+
+    const optional<std::string>& name,
+    const optional<std::string>& description,
+    const optional<std::string>& version
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company = std::get_if<name>       (  &args["company"] );
-    auto siteId  = std::get_if<std::string>(  &args["siteId"] );
-    auto name    = std::get_if<std::string>(  &args["name"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(siteId  != nullptr, "site id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!siteId.empty(),  "site id is missing.");
 
     // Generate checksum from siteId
-    checksum256 site_checksum = sha256(siteId->c_str(), siteId->size());
+    std::string site_checksum_string = company + ";" + siteId;
+    checksum256 site_checksum = sha256(site_checksum_string.c_str(), site_checksum_string.size());
 
     // Access table and make sure site doesnt exist
-    site_table sites(get_self(), company->value);
+    site_table sites(get_self(), get_self().value);
     auto sites_bychecksum = sites.get_index<"bychecksum"_n>();
     auto site = sites_bychecksum.find(site_checksum);
     check(site == sites_bychecksum.end(), "site already exists");
 
     // Create new site
     sites.emplace(get_self(), [&](auto& s) {
-        s.id = sites.available_primary_key();
-        s.site_checksum = site_checksum;
-        s.site_id = *siteId;
+        s.index     = sites.available_primary_key();
+        s.createdBy = user;
+        s.updatedBy = user;
+        s.createdAt = timestamp;
+        s.updatedAt = timestamp;
+
+        s.company   = company;
+        s.siteId    = siteId;
 
         // Optional
-        if (name != nullptr) s.name = *name;
+        if (name)        s.name        = *name;
+        if (description) s.description = *description;
+        if (version)     s.version     = *version;
     });
 }
 
 /**
  * Edit Site
- *
- * Params:
- *  - company (name)
- *  - siteId (string)
- *  - name (string) (optional)
  **/
-void tracelytics::editsite (std::map<std::string, all_type> args) {
+void tracelytics::editsite (
+    const std::string& user,
+    const std::string& company,
+    const std::string& siteId,
+    const time_point& timestamp,
+    const std::map<std::string, all_type>& data,
+
+    const optional<std::string>& name,
+    const optional<std::string>& description,
+    const optional<std::string>& version
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company = std::get_if<name>       (  &args["company"] );
-    auto siteId  = std::get_if<std::string>(  &args["siteId"] );
-    auto name    = std::get_if<std::string> (  &args["name"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(siteId != nullptr, "site id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!siteId.empty(),  "site id is missing.");
 
     // Generate checksum from siteId
-    checksum256 site_checksum = sha256( siteId->c_str(), siteId->size() );
+    std::string site_checksum_string = company + ";" + siteId;
+    checksum256 site_checksum = sha256(site_checksum_string.c_str(), site_checksum_string.size());
 
     // Access table and make sure site exists
-    site_table sites(get_self(), company->value);
+    site_table sites(get_self(), get_self().value);
     auto sites_bychecksum = sites.get_index<"bychecksum"_n>();
     auto site = sites_bychecksum.find( site_checksum );
     check(site != sites_bychecksum.end(), "site does not exist.");
 
     // Edit Site
     sites_bychecksum.modify(site, get_self(), [&](auto& s) {
+        s.updatedBy = user;
+        s.updatedAt = timestamp;
+
         // Optional
-        if (name != nullptr) s.name = *name;
+        if (name)        s.name        = *name;
+        if (description) s.description = *description;
+        if (version)     s.version     = *version;
     });
 }
 
 /**
  * Delete Site
- *
- * Params:
- *  - company (name)
- *  - siteId (string)
  **/
-void tracelytics::delsite (std::map<std::string, all_type> args) {
+void tracelytics::delsite (
+    const std::string& user,
+    const std::string& company,
+    const std::string& siteId,
+    const time_point&  timestamp
+) {
     // Authentication
     require_auth( get_self() );
 
-    // Args
-    auto company =  std::get_if<name>       (  &args["company"] );
-    auto siteId  =  std::get_if<std::string>(  &args["siteId"] );
-
     // Validation
-    check(company != nullptr, "company is missing.");
-    check(siteId != nullptr, "site id is missing.");
+    check(!user.empty(),    "user is missing.");
+    check(!company.empty(), "company is missing.");
+    check(!siteId.empty(),  "site id is missing.");
 
     // Generate checksum from siteId
-    checksum256 site_checksum = sha256(siteId->c_str(), siteId->size());
+    std::string site_checksum_string = company + ";" + siteId;
+    checksum256 site_checksum = sha256(site_checksum_string.c_str(), site_checksum_string.size());
 
     // Access table and make sure site exists
-    site_table sites(get_self(), company->value);
+    site_table sites(get_self(), get_self().value);
     auto sites_bychecksum = sites.get_index<"bychecksum"_n>();
     auto site = sites_bychecksum.find(site_checksum);
     check(site != sites_bychecksum.end(), "site does not exist.");

@@ -16,6 +16,8 @@ const {
   EOSIO_CHAIN_ID,
 } = process.env;
 
+// Patch fix
+if (!EOSIO_CHAIN_ID) process.env.EOSIO_CHAIN_ID = chainIds.local
 const chainId = EOSIO_API_ENDPOINT || chainIds[EOSIO_NETWORK] || chainIds.local;
 
 const rpc = new JsonRpc([process.env.EOSIO_API_ENDPOINT || 'http://0.0.0.0:8888'], { fetch });

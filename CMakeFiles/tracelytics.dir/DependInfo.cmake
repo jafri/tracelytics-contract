@@ -4,11 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/batches.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/batches.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/deliveries.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj"
+  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/items.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj"
+  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/logInventory.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/machines.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.obj"
-  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/productInstances.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/productInstances.cpp.obj"
+  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/processes.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/products.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.obj"
+  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/recipes.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/sites.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/tracelytics.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/users.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.obj"
