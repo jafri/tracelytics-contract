@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/tracelytics.dir/src/companies.cpp.obj"
   "CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj"
   "CMakeFiles/tracelytics.dir/src/items.cpp.obj"
   "CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj"

@@ -1003,11 +1003,11 @@
                     "type": "string"
                 },
                 {
-                    "name": "inputsDelta",
+                    "name": "inputDeltas",
                     "type": "pair_string_ProductQuantity[]"
                 },
                 {
-                    "name": "outputsDelta",
+                    "name": "outputDeltas",
                     "type": "pair_string_ProductQuantity[]"
                 },
                 {

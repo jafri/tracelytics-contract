@@ -25,7 +25,7 @@ void tracelytics::newitem (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!itemId.empty(),  "item id is missing.");
+    check(!itemId.empty(),  "item ID is missing.");
     check(!site.empty(),    "site is missing.");
     check(!product.empty(), "product is missing.");
     check(quantity > 0,     "quantity must be positive to create item.");
@@ -35,14 +35,13 @@ void tracelytics::newitem (
     checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
 
     // Access table and make sure item doesnt exist
-    item_table items(get_self(), get_self().value);
-    auto item_bychecksum = items.get_index<"bysiteitem"_n>();
-    auto item = item_bychecksum.find(item_checksum);
-    check(item == item_bychecksum.end(), "Error creating item " + itemId + " as it already exists at site " + site);
+    auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
+    auto item = items_bysiteitem.find(item_checksum);
+    check(item == items_bysiteitem.end(), "Error creating item " + itemId + " as it already exists at site " + site);
 
     // Create new item
-    items.emplace(get_self(), [&](auto& p) {
-        p.index     = items.available_primary_key();
+    _items.emplace(get_self(), [&](auto& p) {
+        p.index     = _items.available_primary_key();
         p.createdBy  = user;
         p.updatedBy  = user;
         p.createdAt  = timestamp;
@@ -60,14 +59,14 @@ void tracelytics::newitem (
         if (metadata.count("image"))       p.metadata["image"]       = metadata["image"];
 
         // Log the new quantity
-        tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), "active"_n} );
+        tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), eosio::name("active")} );
         loginventory_action.send(p.createdBy,
                                  p.company,
                                  p.itemId,
                                  p.site,
                                  p.product,
                                  p.metadata,
-                                 (std::string) "newitem",
+                                 Actions::NEW_ITEM,
                                  action,
                                  actionId,
                                  p.createdAt,
@@ -105,20 +104,20 @@ void tracelytics::edititem (
     check(!company.empty(), "company is missing.");
     check(!itemId.empty(),  "item id is missing.");
     check(!site.empty(),    "site is missing.");
-    check(quantity || delta, "both quantity and delta are missing."); // Only provide 1 of quantity or delta
+    check(quantity || delta, "both quantity and delta are missing. Must provide one."); // Only provide 1 of quantity or delta
 
     // Generate checksum from itemId
     std::string item_checksum_string = company + ";" + site + ";" + itemId;
     checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
 
     // Access table and make sure item exists
-    item_table items(get_self(), get_self().value);
-    auto item_bychecksum = items.get_index<"bysiteitem"_n>();
-    auto item = item_bychecksum.find( item_checksum );
-    check(item != item_bychecksum.end(), "Error editing item " + itemId + " as it does not exist at site " + site);
+    auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
+    auto item = items_bysiteitem.find( item_checksum );
+    check(item != items_bysiteitem.end(), "Error editing item " + itemId + " as it does not exist at site " + site);
+    check(company == item->company && site == item->site && itemId == item->itemId, "item mismatch");
 
     // Edit item
-    item_bychecksum.modify(item, get_self(), [&](auto& p) {
+    items_bysiteitem.modify(item, get_self(), [&](auto& p) {
         p.updatedBy = user;
         p.updatedAt = timestamp;
 
@@ -145,14 +144,14 @@ void tracelytics::edititem (
             check(p.quantity >= 0, "Item " + p.itemId + " quantity at site " + p.site + " must be zero or positive. Provided quantity: " + to_string(p.quantity));
 
             // Log quantity change
-            tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), "active"_n} );
+            tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), eosio::name("active")} );
             loginventory_action.send(p.updatedBy,
                                      p.company,
                                      p.itemId,
                                      p.site,
                                      p.product,
                                      p.metadata,
-                                     (std::string) "edititem",
+                                     Actions::EDIT_ITEM,
                                      action,
                                      actionId,
                                      p.updatedAt,
@@ -164,7 +163,7 @@ void tracelytics::edititem (
 
     // Delete if quantity is 0
     if (item->quantity == 0) {
-        item_bychecksum.erase(item);
+        items_bysiteitem.erase(item);
     }
 }
 
@@ -194,20 +193,20 @@ void tracelytics::delitem (
     checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
 
     // Access table and make sure item exists
-    item_table items(get_self(), get_self().value);
-    auto item_bychecksum = items.get_index<"bysiteitem"_n>();
-    auto item = item_bychecksum.find(item_checksum);
-    check(item != item_bychecksum.end(), "Error deleting item " + itemId + " as it does not exist at site " + site);
+    auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
+    auto item = items_bysiteitem.find(item_checksum);
+    check(item != items_bysiteitem.end(), "Error deleting item " + itemId + " as it does not exist at site " + site);
+    check(company == item->company && site == item->site && itemId == item->itemId, "item mismatch");
 
     // Log quantity change
-    tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), "active"_n} );
+    tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), eosio::name("active")} );
     loginventory_action.send(item->updatedBy,
                              item->company,
                              item->itemId,
                              item->site,
                              item->product,
                              item->metadata,
-                             (std::string) "delitem",
+                             Actions::DELETE_ITEM,
                              action,
                              actionId,
                              timestamp,
@@ -216,7 +215,7 @@ void tracelytics::delitem (
                              (int64_t) 0);
 
     // Delete item
-    item_bychecksum.erase(item);
+    items_bysiteitem.erase(item);
 }
 
 // Deltas quantity if exists
@@ -239,21 +238,20 @@ void tracelytics::upsertitem (
     checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
 
     // Existing item
-    item_table items(get_self(), get_self().value);
-    auto items_bychecksum = items.get_index<"bysiteitem"_n>();
-    auto existing_item = items_bychecksum.find( item_checksum );
+    auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
+    auto existing_item = items_bysiteitem.find( item_checksum );
 
     // Empty call data
     std::map<std::string, all_type> call_data;
 
     // Item exists at site
-    if (existing_item != items_bychecksum.end()) {
+    if (existing_item != items_bysiteitem.end()) {
         // Make sure the site has enough items after delta
         check(existing_item->quantity + delta >= 0, "Site " + site + " has " +
                                                     to_string(existing_item->quantity) + " " + item +
                                                     "(" + product + "), you are trying to use " + to_string(-delta));
 
-        tracelytics::edititem_action edititem_action( get_self(), {get_self(), "active"_n} );
+        tracelytics::edititem_action edititem_action( get_self(), {get_self(), eosio::name("active")} );
         edititem_action.send(user,
                              company,
                              site,
@@ -272,7 +270,7 @@ void tracelytics::upsertitem (
         // Make sure we are not trying to create with negative delta
         check(delta > 0, "Item " + item + " does not exist at site " + site + ". Please create it first.");
 
-        tracelytics::newitem_action newitem_action( get_self(), {get_self(), "active"_n} );
+        tracelytics::newitem_action newitem_action( get_self(), {get_self(), eosio::name("active")} );
         newitem_action.send( user,
                              company,
                              site,

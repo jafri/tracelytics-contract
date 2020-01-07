@@ -18,9 +18,8 @@ void tracelytics::loginventory (
     require_auth( get_self() );
 
     // Log
-    inventory_log_table inventory_logs(get_self(), get_self().value);
-    inventory_logs.emplace(get_self(), [&](auto& i) {
-        i.index          = inventory_logs.available_primary_key();
+    _inventory_logs.emplace(get_self(), [&](auto& i) {
+        i.index          = _inventory_logs.available_primary_key();
         i.user           = user;
         i.company        = company;
         i.item           = item;

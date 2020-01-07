@@ -70,9 +70,22 @@ tracelytics/CMakeFiles/tracelytics.dir/src/tracelytics.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tracelytics.dir/src/tracelytics.cpp.s"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics.cpp -o CMakeFiles/tracelytics.dir/src/tracelytics.cpp.s
 
+tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
+tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj: tracelytics/src/companies.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj"
+	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/companies.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp
+
+tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tracelytics.dir/src/companies.cpp.i"
+	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp > CMakeFiles/tracelytics.dir/src/companies.cpp.i
+
+tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tracelytics.dir/src/companies.cpp.s"
+	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp -o CMakeFiles/tracelytics.dir/src/companies.cpp.s
+
 tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj: tracelytics/src/deliveries.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/deliveries.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.i: cmake_force
@@ -85,7 +98,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj: tracelytics/src/items.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/items.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/items.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.i: cmake_force
@@ -98,7 +111,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj: tracelytics/src/logInventory.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/logInventory.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.i: cmake_force
@@ -111,7 +124,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.obj: tracelytics/src/machines.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/machines.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/machines.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.i: cmake_force
@@ -124,7 +137,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/machines.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj: tracelytics/src/processes.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/processes.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/processes.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.i: cmake_force
@@ -137,7 +150,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/processes.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.obj: tracelytics/src/products.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/products.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/products.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.i: cmake_force
@@ -150,7 +163,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/products.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj: tracelytics/src/recipes.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/recipes.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/recipes.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.i: cmake_force
@@ -163,7 +176,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/recipes.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.obj: tracelytics/src/sites.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/sites.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/sites.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.i: cmake_force
@@ -176,7 +189,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/sites.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.obj: tracelytics/src/users.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/users.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/users.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.i: cmake_force
@@ -189,7 +202,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/users.cpp.s: cmake_force
 
 tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.obj: tracelytics/CMakeFiles/tracelytics.dir/flags.make
 tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.obj: tracelytics/src/utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.obj"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && /Users/jafri/eosio.cdt/build/bin/eosio-cpp  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tracelytics.dir/src/utils.cpp.obj -c /Users/jafri/eosio.contracts/contracts/tracelytics/src/utils.cpp
 
 tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.i: cmake_force
@@ -203,6 +216,7 @@ tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.s: cmake_force
 # Object files for target tracelytics
 tracelytics_OBJECTS = \
 "CMakeFiles/tracelytics.dir/src/tracelytics.cpp.obj" \
+"CMakeFiles/tracelytics.dir/src/companies.cpp.obj" \
 "CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj" \
 "CMakeFiles/tracelytics.dir/src/items.cpp.obj" \
 "CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj" \
@@ -218,6 +232,7 @@ tracelytics_OBJECTS = \
 tracelytics_EXTERNAL_OBJECTS =
 
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/tracelytics.cpp.obj
+tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj
@@ -230,7 +245,7 @@ tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/users.c
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/src/utils.cpp.obj
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/build.make
 tracelytics/tracelytics.wasm: tracelytics/CMakeFiles/tracelytics.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable tracelytics.wasm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/jafri/eosio.contracts/contracts/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable tracelytics.wasm"
 	cd /Users/jafri/eosio.contracts/contracts/tracelytics && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tracelytics.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

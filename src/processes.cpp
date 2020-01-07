@@ -38,14 +38,13 @@ void tracelytics::newprocess (
     checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
 
     // Access table and make sure process doesnt exist
-    process_table processes(get_self(), get_self().value);
-    auto processes_bychecksum = processes.get_index<"bychecksum"_n>();
-    auto process = processes_bychecksum.find(process_checksum);
-    check(process == processes_bychecksum.end(), "process already exists");
+    auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
+    auto process = processes_bycompandid.find(process_checksum);
+    check(process == processes_bycompandid.end(), "process already exists");
 
     // Create new process
-    processes.emplace(get_self(), [&](auto& b) {
-        b.index     = processes.available_primary_key();
+    _processes.emplace(get_self(), [&](auto& b) {
+        b.index     = _processes.available_primary_key();
         b.createdBy = user;
         b.updatedBy = user;
         b.createdAt = timestamp;
@@ -66,45 +65,20 @@ void tracelytics::newprocess (
         if (status)      b.status      = *status;
         if (description) b.description = *description;
         if (version)     b.version     = *version;
+
+        // Process immediately
+        if (type == ProcessType::SPLIT || type == ProcessType::MERGE) {
+            b.status = ProcessStatus::PROCESSED;
+
+            if (!endTime) {
+                b.endTime = timestamp;
+            }
+        }
+
+        // New process, so we substract inputs from our site
+        std::map<std::string, ProductQuantity> emptyDeltas;
+        processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, false);
     });
-
-    // Substract quantity for each item from inventory
-    for( auto const& [item, productAndQuantity] : inputs ) {
-        // Process item quantity change
-        upsertitem(user,
-                   company,
-                   site,
-                   item,
-                   productAndQuantity.product,
-                  -productAndQuantity.quantity, // NEGATIVE
-                   productAndQuantity.metadata,
-                   (std::string) "newprocess",
-                   processId,
-                   timestamp);
-    }
-
-    // Split or merge type
-    // Finishes processing the process immediately
-    if (type == ProcessType::Split || type == ProcessType::Merge) {
-        std::map<std::string, ProductQuantity> call_inputs;
-        std::map<std::string, ProductQuantity> call_outputs;
-        std::map<std::string, all_type> call_data;
-        tracelytics::editprocess_action editprocess_action( get_self(), {get_self(), "active"_n} );
-        editprocess_action.send(user,
-                                company,
-                                processId,
-                                call_inputs,
-                                call_outputs,
-                                timestamp,
-                                call_data,
-
-                                std::nullopt,
-                                std::nullopt,
-                                std::nullopt,
-                                (std::string) "processed",
-                                std::nullopt,
-                                std::nullopt);
-    }
 }
 
 /**
@@ -114,8 +88,8 @@ void tracelytics::editprocess (
     const std::string& user,
     const std::string& company,
     const std::string& processId,
-    const std::map<std::string, ProductQuantity>& inputsDelta,
-    const std::map<std::string, ProductQuantity>& outputsDelta,
+    const std::map<std::string, ProductQuantity>& inputDeltas,
+    const std::map<std::string, ProductQuantity>& outputDeltas,
     const time_point& timestamp,
     const std::map<std::string, all_type>& data,
 
@@ -139,33 +113,18 @@ void tracelytics::editprocess (
     checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
 
     // Access table and make sure process doesnt exist
-    process_table processes(get_self(), get_self().value);
-    auto processes_bychecksum = processes.get_index<"bychecksum"_n>();
-    auto process = processes_bychecksum.find(process_checksum);
-    check(process != processes_bychecksum.end(), "process does not exist.");
-
-    // Update inventory if processed
-    if (process->status != "processed" && status.value_or("") == "processed") {
-        // For each cargo
-        for( auto const& [item, productAndQuantity] : process->outputs ) {
-            // Process item quantity change
-            upsertitem(user,
-                       company,
-                       process->site,
-                       item,
-                       productAndQuantity.product,
-                       productAndQuantity.quantity,
-                       productAndQuantity.metadata,
-                       (std::string) "editprocess",
-                       processId,
-                       timestamp);
-        }
-    }
+    auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
+    auto process = processes_bycompandid.find(process_checksum);
+    check(process != processes_bycompandid.end(), "process does not exist.");
+    check(company == process->company && processId == process->processId, "process mismatch");
 
     // Edit process
-    processes_bychecksum.modify(process, get_self(), [&](auto& b) {
+    processes_bycompandid.modify(process, get_self(), [&](auto& b) {
         b.updatedBy = user;
         b.updatedAt = timestamp;
+
+        // Checks: 1) New status is PROCESSED and old status is not PROCESSED
+        bool justProcessed = status.value_or("") == ProcessStatus::PROCESSED && b.status != ProcessStatus::PROCESSED;
 
         // Optional
         if (startTime)   b.startTime   = *startTime;
@@ -175,96 +134,18 @@ void tracelytics::editprocess (
         if (description) b.description = *description;
         if (version)     b.version     = *version;
 
-        // Process input deltas
-        if (inputsDelta.size() > 0) {
-            // Consistent
-            auto* mapOfItems = &b.inputs;
-            auto* mapOfDeltas = &inputsDelta;
-            auto* row = &b;
-
-            for( auto const& [item, productAndQuantity] : *mapOfDeltas ) {
-                // Ensure new quantity is zero or positive
-                check(productAndQuantity.quantity >= 0, "quantity in delivery must be zero or positive for item " + item);
-
-                // processingDelta = new quantity of item - current quantity
-                int64_t processingDelta = mapOfItems->count(item) > 0
-                    ? productAndQuantity.quantity - (*mapOfItems)[item].quantity // In cargo
-                    : productAndQuantity.quantity;                               // Not in cargo
-                int64_t inventoryDelta = -processingDelta;
-
-                /**
-                 * inventoryDelta has 3 states
-                 * Zero: No change
-                 * Positive (+): - Cargo -> + Inventory (refund)
-                 * Negative (-): - Inventory -> + Cargo (charge)
-                 **/
-
-                // Skip if processingDelta is 0, as nothing changes
-                if (inventoryDelta == 0) {
-                    continue;
-                }
-
-                // Update cargo
-                if (productAndQuantity.quantity > 0) {
-                    (*mapOfItems)[item] = productAndQuantity;
-                } else if (productAndQuantity.quantity == 0) {
-                    (*mapOfItems).erase(item);
-                }
-
-                // Process item quantity change
-                upsertitem(user,
-                           company,
-                           row->site,
-                           item,
-                           productAndQuantity.product,
-                           inventoryDelta,
-                           productAndQuantity.metadata,
-                           (std::string) "editprocess",
-                           processId,
-                           timestamp);
-            }
+        // Edit deltas
+        if (b.status != ProcessStatus::PROCESSED) {
+          if (inputDeltas.size() > 0)
+            processcargo(b, b.inputs, inputDeltas, user, company, Actions::EDIT_PROCESS, false);
+          if (outputDeltas.size() > 0)
+            processcargo(b, b.outputs, outputDeltas, user, company, Actions::EDIT_PROCESS, true);
         }
 
-        // Process output deltas
-        if (outputsDelta.size() > 0) {
-            // Consistent
-            auto* mapOfItems = &b.outputs;
-            auto* mapOfDeltas = &outputsDelta;
-            auto* row = &b;
-
-            // Initialize items table
-            item_table items(get_self(), get_self().value);
-            auto items_bychecksum = items.get_index<"bysiteitem"_n>();
-
-            for( auto const& [item, productAndQuantity] : *mapOfDeltas ) {
-                // Ensure new quantity is zero or positive
-                check(productAndQuantity.quantity >= 0, "quantity in delivery must be zero or positive for item " + item);
-
-                // processingDelta = new quantity of item - current quantity
-                int64_t processingDelta = mapOfItems->count(item) > 0
-                    ? productAndQuantity.quantity - (*mapOfItems)[item].quantity // In cargo
-                    : productAndQuantity.quantity;                               // Not in cargo
-                int64_t inventoryDelta = -processingDelta;
-
-                /**
-                 * inventoryDelta has 3 states
-                 * Zero: No change
-                 * Positive (+): - Cargo -> + Inventory (refund)
-                 * Negative (-): - Inventory -> + Cargo (charge)
-                 **/
-
-                // Skip if processingDelta is 0, as nothing changes
-                if (inventoryDelta == 0) {
-                    continue;
-                }
-
-                // Update cargo
-                if (productAndQuantity.quantity > 0) {
-                    (*mapOfItems)[item] = productAndQuantity;
-                } else if (productAndQuantity.quantity == 0) {
-                    (*mapOfItems).erase(item);
-                }
-            }
+        // Update inventory if processed
+        if (justProcessed) {
+          std::map<std::string, ProductQuantity> emptyDeltas;
+          processcargo(b, b.outputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, false);
         }
     });
 }
@@ -291,11 +172,11 @@ void tracelytics::delprocess (
     checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
 
     // Access table and make sure process doesnt exist
-    process_table processes(get_self(), get_self().value);
-    auto processes_bychecksum = processes.get_index<"bychecksum"_n>();
-    auto process = processes_bychecksum.find(process_checksum);
-    check(process != processes_bychecksum.end(), "process does not exist.");
+    auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
+    auto process = processes_bycompandid.find(process_checksum);
+    check(process != processes_bycompandid.end(), "process does not exist.");
+    check(company == process->company && processId == process->processId, "process mismatch");
 
     // Delete process
-    processes_bychecksum.erase(process);
+    processes_bycompandid.erase(process);
 }

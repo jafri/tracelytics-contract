@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/deliveries.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/items.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/items.cpp.obj"
   "/Users/jafri/eosio.contracts/contracts/tracelytics/src/logInventory.cpp" "/Users/jafri/eosio.contracts/contracts/tracelytics/CMakeFiles/tracelytics.dir/src/logInventory.cpp.obj"

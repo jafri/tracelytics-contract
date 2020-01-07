@@ -31,14 +31,13 @@ void tracelytics::newrecipe (
     checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
 
     // Access table and make sure recipe doesnt exist
-    recipe_table recipes(get_self(), get_self().value);
-    auto recipes_bychecksum = recipes.get_index<"bychecksum"_n>();
-    auto recipe = recipes_bychecksum.find(recipe_checksum);
-    check(recipe == recipes_bychecksum.end(), "recipe already exists");
+    auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
+    auto recipe = recipes_bycompandid.find(recipe_checksum);
+    check(recipe == recipes_bycompandid.end(), "recipe already exists");
 
     // Create new recipe
-    recipes.emplace(get_self(), [&](auto& r) {
-        r.index     = recipes.available_primary_key();
+    _recipes.emplace(get_self(), [&](auto& r) {
+        r.index     = _recipes.available_primary_key();
         r.createdBy = user;
         r.updatedBy = user;
         r.createdAt = timestamp;
@@ -87,13 +86,13 @@ void tracelytics::editrecipe (
     checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
 
     // Access table and make sure recipe exists
-    recipe_table recipes(get_self(), get_self().value);
-    auto recipes_bychecksum = recipes.get_index<"bychecksum"_n>();
-    auto recipe = recipes_bychecksum.find( recipe_checksum );
-    check(recipe != recipes_bychecksum.end(), "recipe does not exist.");
+    auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
+    auto recipe = recipes_bycompandid.find( recipe_checksum );
+    check(recipe != recipes_bycompandid.end(), "recipe does not exist.");
+    check(company == recipe->company && recipeId == recipe->recipeId, "recipe mismatch");
 
     // Edit recipe
-    recipes_bychecksum.modify(recipe, get_self(), [&](auto& r) {
+    recipes_bycompandid.modify(recipe, get_self(), [&](auto& r) {
         r.updatedBy = user;
         r.updatedAt = timestamp;
 
@@ -129,11 +128,11 @@ void tracelytics::delrecipe (
     checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
 
     // Access table and make sure recipe exists
-    recipe_table recipes(get_self(), get_self().value);
-    auto recipes_bychecksum = recipes.get_index<"bychecksum"_n>();
-    auto recipe = recipes_bychecksum.find(recipe_checksum);
-    check(recipe != recipes_bychecksum.end(), "recipe does not exist.");
+    auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
+    auto recipe = recipes_bycompandid.find(recipe_checksum);
+    check(recipe != recipes_bycompandid.end(), "recipe does not exist.");
+    check(company == recipe->company && recipeId == recipe->recipeId, "recipe mismatch");
 
     // Delete recipe
-    recipes_bychecksum.erase(recipe);
+    recipes_bycompandid.erase(recipe);
 }

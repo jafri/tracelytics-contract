@@ -4,10 +4,92 @@
     "types": [
         {
             "new_type_name": "all_type",
-            "type": "variant_int8_bool_int8_uint8_int16_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset"
+            "type": "variant_int8_bool_uint64_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset"
         }
     ],
     "structs": [
+        {
+            "name": "Company",
+            "base": "",
+            "fields": [
+                {
+                    "name": "index",
+                    "type": "uint64"
+                },
+                {
+                    "name": "companyId",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "legalName",
+                    "type": "string"
+                },
+                {
+                    "name": "country",
+                    "type": "string"
+                },
+                {
+                    "name": "contact",
+                    "type": "string"
+                },
+                {
+                    "name": "phone",
+                    "type": "string"
+                },
+                {
+                    "name": "email",
+                    "type": "string"
+                },
+                {
+                    "name": "fax",
+                    "type": "string"
+                },
+                {
+                    "name": "customerSince",
+                    "type": "time_point"
+                },
+                {
+                    "name": "currentClient",
+                    "type": "int64"
+                },
+                {
+                    "name": "status",
+                    "type": "string"
+                },
+                {
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "name": "version",
+                    "type": "string"
+                },
+                {
+                    "name": "createdBy",
+                    "type": "string"
+                },
+                {
+                    "name": "updatedBy",
+                    "type": "string"
+                },
+                {
+                    "name": "createdAt",
+                    "type": "time_point"
+                },
+                {
+                    "name": "updatedAt",
+                    "type": "time_point"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                }
+            ]
+        },
         {
             "name": "Delivery",
             "base": "",
@@ -17,15 +99,11 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "company",
-                    "type": "string"
-                },
-                {
                     "name": "deliveryId",
                     "type": "string"
                 },
                 {
-                    "name": "type",
+                    "name": "route",
                     "type": "string"
                 },
                 {
@@ -34,6 +112,14 @@
                 },
                 {
                     "name": "toSite",
+                    "type": "string"
+                },
+                {
+                    "name": "fromCompany",
+                    "type": "string"
+                },
+                {
+                    "name": "toCompany",
                     "type": "string"
                 },
                 {
@@ -367,10 +453,6 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "company",
-                    "type": "string"
-                },
-                {
                     "name": "productId",
                     "type": "string"
                 },
@@ -388,6 +470,14 @@
                 },
                 {
                     "name": "description",
+                    "type": "string"
+                },
+                {
+                    "name": "defaultPrice",
+                    "type": "int64"
+                },
+                {
+                    "name": "defaultCurrency",
                     "type": "string"
                 },
                 {
@@ -519,6 +609,14 @@
                     "type": "string"
                 },
                 {
+                    "name": "address",
+                    "type": "string"
+                },
+                {
+                    "name": "contact",
+                    "type": "string"
+                },
+                {
                     "name": "description",
                     "type": "string"
                 },
@@ -633,6 +731,28 @@
             ]
         },
         {
+            "name": "delcompany",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "string"
+                },
+                {
+                    "name": "company",
+                    "type": "string"
+                },
+                {
+                    "name": "companyId",
+                    "type": "string"
+                },
+                {
+                    "name": "timestamp",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
             "name": "deldelivery",
             "base": "",
             "fields": [
@@ -646,6 +766,10 @@
                 },
                 {
                     "name": "deliveryId",
+                    "type": "string"
+                },
+                {
+                    "name": "route",
                     "type": "string"
                 },
                 {
@@ -821,6 +945,80 @@
             ]
         },
         {
+            "name": "editcompany",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "string"
+                },
+                {
+                    "name": "company",
+                    "type": "string"
+                },
+                {
+                    "name": "companyId",
+                    "type": "string"
+                },
+                {
+                    "name": "timestamp",
+                    "type": "time_point"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                },
+                {
+                    "name": "name",
+                    "type": "string?"
+                },
+                {
+                    "name": "legalName",
+                    "type": "string?"
+                },
+                {
+                    "name": "country",
+                    "type": "string?"
+                },
+                {
+                    "name": "contact",
+                    "type": "string?"
+                },
+                {
+                    "name": "phone",
+                    "type": "string?"
+                },
+                {
+                    "name": "email",
+                    "type": "string?"
+                },
+                {
+                    "name": "fax",
+                    "type": "string?"
+                },
+                {
+                    "name": "customerSince",
+                    "type": "time_point?"
+                },
+                {
+                    "name": "currentClient",
+                    "type": "int64?"
+                },
+                {
+                    "name": "status",
+                    "type": "string?"
+                },
+                {
+                    "name": "description",
+                    "type": "string?"
+                },
+                {
+                    "name": "version",
+                    "type": "string?"
+                }
+            ]
+        },
+        {
             "name": "editdelivery",
             "base": "",
             "fields": [
@@ -837,7 +1035,11 @@
                     "type": "string"
                 },
                 {
-                    "name": "cargoDelta",
+                    "name": "route",
+                    "type": "string"
+                },
+                {
+                    "name": "cargoDeltas",
                     "type": "pair_string_ProductQuantity[]"
                 },
                 {
@@ -853,7 +1055,7 @@
                     "type": "string?"
                 },
                 {
-                    "name": "type",
+                    "name": "toCompany",
                     "type": "string?"
                 },
                 {
@@ -1003,11 +1205,11 @@
                     "type": "string"
                 },
                 {
-                    "name": "inputsDelta",
+                    "name": "inputDeltas",
                     "type": "pair_string_ProductQuantity[]"
                 },
                 {
-                    "name": "outputsDelta",
+                    "name": "outputDeltas",
                     "type": "pair_string_ProductQuantity[]"
                 },
                 {
@@ -1069,11 +1271,19 @@
                     "type": "pair_string_all_type[]"
                 },
                 {
+                    "name": "name",
+                    "type": "string?"
+                },
+                {
                     "name": "uom",
                     "type": "string?"
                 },
                 {
-                    "name": "name",
+                    "name": "defaultPrice",
+                    "type": "int64?"
+                },
+                {
+                    "name": "defaultCurrency",
                     "type": "string?"
                 },
                 {
@@ -1162,6 +1372,14 @@
                 },
                 {
                     "name": "name",
+                    "type": "string?"
+                },
+                {
+                    "name": "address",
+                    "type": "string?"
+                },
+                {
+                    "name": "contact",
                     "type": "string?"
                 },
                 {
@@ -1291,6 +1509,80 @@
             ]
         },
         {
+            "name": "newcompany",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "string"
+                },
+                {
+                    "name": "company",
+                    "type": "string"
+                },
+                {
+                    "name": "companyId",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "timestamp",
+                    "type": "time_point"
+                },
+                {
+                    "name": "data",
+                    "type": "pair_string_all_type[]"
+                },
+                {
+                    "name": "legalName",
+                    "type": "string?"
+                },
+                {
+                    "name": "country",
+                    "type": "string?"
+                },
+                {
+                    "name": "contact",
+                    "type": "string?"
+                },
+                {
+                    "name": "phone",
+                    "type": "string?"
+                },
+                {
+                    "name": "email",
+                    "type": "string?"
+                },
+                {
+                    "name": "fax",
+                    "type": "string?"
+                },
+                {
+                    "name": "customerSince",
+                    "type": "time_point?"
+                },
+                {
+                    "name": "currentClient",
+                    "type": "int64?"
+                },
+                {
+                    "name": "status",
+                    "type": "string?"
+                },
+                {
+                    "name": "description",
+                    "type": "string?"
+                },
+                {
+                    "name": "version",
+                    "type": "string?"
+                }
+            ]
+        },
+        {
             "name": "newdelivery",
             "base": "",
             "fields": [
@@ -1307,7 +1599,7 @@
                     "type": "string"
                 },
                 {
-                    "name": "type",
+                    "name": "route",
                     "type": "string"
                 },
                 {
@@ -1316,6 +1608,14 @@
                 },
                 {
                     "name": "toSite",
+                    "type": "string"
+                },
+                {
+                    "name": "fromCompany",
+                    "type": "string"
+                },
+                {
+                    "name": "toCompany",
                     "type": "string"
                 },
                 {
@@ -1539,7 +1839,19 @@
                     "type": "string"
                 },
                 {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
                     "name": "uom",
+                    "type": "string"
+                },
+                {
+                    "name": "defaultPrice",
+                    "type": "int64"
+                },
+                {
+                    "name": "defaultCurrency",
                     "type": "string"
                 },
                 {
@@ -1549,10 +1861,6 @@
                 {
                     "name": "data",
                     "type": "pair_string_all_type[]"
-                },
-                {
-                    "name": "name",
-                    "type": "string?"
                 },
                 {
                     "name": "image",
@@ -1631,6 +1939,14 @@
                     "type": "string"
                 },
                 {
+                    "name": "siteCompany",
+                    "type": "string"
+                },
+                {
+                    "name": "address",
+                    "type": "string"
+                },
+                {
                     "name": "timestamp",
                     "type": "time_point"
                 },
@@ -1640,6 +1956,10 @@
                 },
                 {
                     "name": "name",
+                    "type": "string?"
+                },
+                {
+                    "name": "contact",
                     "type": "string?"
                 },
                 {
@@ -1802,6 +2122,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "delcompany",
+            "type": "delcompany",
+            "ricardian_contract": ""
+        },
+        {
             "name": "deldelivery",
             "type": "deldelivery",
             "ricardian_contract": ""
@@ -1839,6 +2164,11 @@
         {
             "name": "deluser",
             "type": "deluser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "editcompany",
+            "type": "editcompany",
             "ricardian_contract": ""
         },
         {
@@ -1884,6 +2214,11 @@
         {
             "name": "loginventory",
             "type": "loginventory",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "newcompany",
+            "type": "newcompany",
             "ricardian_contract": ""
         },
         {
@@ -1933,6 +2268,13 @@
         }
     ],
     "tables": [
+        {
+            "name": "company",
+            "type": "Company",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
         {
             "name": "delivery",
             "type": "Delivery",
@@ -2000,8 +2342,8 @@
     "ricardian_clauses": [],
     "variants": [
         {
-            "name": "variant_int8_bool_int8_uint8_int16_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset",
-            "types": ["int8","bool","int8","uint8","int16","uint16","int32","uint32","int64","uint64","int128","uint128","varint32","varuint32","float32","float64","float128","time_point","time_point_sec","name","string","block_timestamp_type","checksum160","checksum256","checksum512","public_key","signature","symbol","symbol_code","asset","extended_asset"]
+            "name": "variant_int8_bool_uint64_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset",
+            "types": ["int8","bool","uint64","uint16","int32","uint32","int64","uint64","int128","uint128","varint32","varuint32","float32","float64","float128","time_point","time_point_sec","name","string","block_timestamp_type","checksum160","checksum256","checksum512","public_key","signature","symbol","symbol_code","asset","extended_asset"]
         }
     ]
 }

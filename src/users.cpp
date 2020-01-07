@@ -32,14 +32,13 @@ void tracelytics::newuser (
     checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user doesnt exist
-    user_table users(get_self(), get_self().value);
-    auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto existing_user = users_bychecksum.find(user_checksum);
-    check(existing_user == users_bychecksum.end(), "user already exists");
+    auto users_byid = _users.get_index<eosio::name("byid")>();
+    auto existing_user = users_byid.find(user_checksum);
+    check(existing_user == users_byid.end(), "user already exists");
 
     // Create new user
-    users.emplace(get_self(), [&](auto& u) {
-        u.index          = users.available_primary_key();
+    _users.emplace(get_self(), [&](auto& u) {
+        u.index          = _users.available_primary_key();
         u.createdBy      = user;
         u.updatedBy      = user;
         u.createdAt      = timestamp;
@@ -92,13 +91,13 @@ void tracelytics::edituser (
     checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user exists
-    user_table users(get_self(), get_self().value);
-    auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto existing_user = users_bychecksum.find( user_checksum );
-    check(existing_user != users_bychecksum.end(), "user does not exist.");
+    auto users_byid = _users.get_index<eosio::name("byid")>();
+    auto existing_user = users_byid.find( user_checksum );
+    check(existing_user != users_byid.end(), "user does not exist.");
+    check(userId == existing_user->userId, "user mismatch");
 
     // Edit User
-    users_bychecksum.modify(existing_user, get_self(), [&](auto& u) {
+    users_byid.modify(existing_user, get_self(), [&](auto& u) {
         u.updatedBy      = user;
         u.updatedAt      = timestamp;
 
@@ -137,11 +136,11 @@ void tracelytics::deluser (
     checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
 
     // Access table and make sure user exists
-    user_table users(get_self(), get_self().value);
-    auto users_bychecksum = users.get_index<"bychecksum"_n>();
-    auto existing_user = users_bychecksum.find(user_checksum);
-    check(existing_user != users_bychecksum.end(), "user does not exist.");
+    auto users_byid = _users.get_index<eosio::name("byid")>();
+    auto existing_user = users_byid.find(user_checksum);
+    check(existing_user != users_byid.end(), "user does not exist.");
+    check(userId == existing_user->userId, "user mismatch");
 
     // Delete user
-    users_bychecksum.erase(existing_user);
+    users_byid.erase(existing_user);
 }

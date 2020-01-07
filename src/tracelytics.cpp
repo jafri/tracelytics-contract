@@ -15,13 +15,13 @@ void tracelytics::push(
     ec_verify(verifydata, sig, pk);
 
     if (action == "create") {
-        // tracelytics::create_action c_action( get_self(), {get_self(), "active"_n} );
+        // tracelytics::create_action c_action( get_self(), {get_self(), eosio::name("active")} );
         // c_action.send(username, company, entity, args);
     } else if (action == "patch") {
-        // tracelytics::patch_action p_action( get_self(), {get_self(), "active"_n} );
+        // tracelytics::patch_action p_action( get_self(), {get_self(), eosio::name("active")} );
         // p_action.send(username, company, entity, args);
     } else if (action == "remove") {
-        // tracelytics::remove_action r_action( get_self(), {get_self(), "active"_n} );
+        // tracelytics::remove_action r_action( get_self(), {get_self(), eosio::name("active")} );
         // r_action.send(username, company, entity, args);
     }
 }

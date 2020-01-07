@@ -29,14 +29,13 @@ void tracelytics::newmachine (
     checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
 
     // Access table and make sure machine doesnt exist
-    machine_table machines(get_self(), get_self().value);
-    auto machines_bychecksum = machines.get_index<"bychecksum"_n>();
-    auto machine = machines_bychecksum.find(machine_checksum);
-    check(machine == machines_bychecksum.end(), "machine already exists");
+    auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
+    auto machine = machines_bycompandid.find(machine_checksum);
+    check(machine == machines_bycompandid.end(), "machine already exists");
 
     // Create new machine
-    machines.emplace(get_self(), [&](auto& m) {
-        m.index      = machines.available_primary_key();
+    _machines.emplace(get_self(), [&](auto& m) {
+        m.index      = _machines.available_primary_key();
         m.createdBy  = user;
         m.updatedBy  = user;
         m.createdAt  = timestamp;
@@ -87,13 +86,13 @@ void tracelytics::editmachine (
     checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
 
     // Access table and make sure machine exists
-    machine_table machines(get_self(), get_self().value);
-    auto machines_bychecksum = machines.get_index<"bychecksum"_n>();
-    auto machine = machines_bychecksum.find( machine_checksum );
-    check(machine != machines_bychecksum.end(), "machine does not exist.");
+    auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
+    auto machine = machines_bycompandid.find( machine_checksum );
+    check(machine != machines_bycompandid.end(), "machine does not exist.");
+    check(company == machine->company && machineId == machine->machineId, "machine mismatch");
 
     // Edit Machine
-    machines_bychecksum.modify(machine, get_self(), [&](auto& m) {
+    machines_bycompandid.modify(machine, get_self(), [&](auto& m) {
         m.updatedBy = user;
         m.updatedAt = timestamp;
 
@@ -127,11 +126,11 @@ void tracelytics::delmachine (
     checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
 
     // Access table and make sure machine exists
-    machine_table machines(get_self(), get_self().value);
-    auto machines_bychecksum = machines.get_index<"bychecksum"_n>();
-    auto machine = machines_bychecksum.find(machine_checksum);
-    check(machine != machines_bychecksum.end(), "machine does not exist.");
+    auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
+    auto machine = machines_bycompandid.find(machine_checksum);
+    check(machine != machines_bycompandid.end(), "machine does not exist.");
+    check(company == machine->company && machineId == machine->machineId, "machine mismatch");
 
     // Delete machine
-    machines_bychecksum.erase(machine);
+    machines_bycompandid.erase(machine);
 }

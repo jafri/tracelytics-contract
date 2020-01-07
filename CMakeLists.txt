@@ -1,5 +1,6 @@
 add_contract(tracelytics tracelytics
    ${CMAKE_CURRENT_SOURCE_DIR}/src/tracelytics.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/companies.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/deliveries.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/items.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/logInventory.cpp
