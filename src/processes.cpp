@@ -27,19 +27,17 @@ void tracelytics::newprocess (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!processId.empty(), "process id is missing.");
+    check(!processId.empty(), "process ID is missing.");
     check(!type.empty(),      "type is missing.");
     check(!site.empty(),      "site is missing.");
     check(inputs.size() > 0,  "inputs are empty.");
-    check(outputs.size() > 0, "outputs are empty.");
 
-    // Generate checksum from processId
-    std::string process_checksum_string = company + ";" + processId;
-    checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
+    // Check site exists
+    check_site_exists(company, site);
 
     // Access table and make sure process doesnt exist
     auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
-    auto process = processes_bycompandid.find(process_checksum);
+    auto process = processes_bycompandid.find(Checksum::PROCESS(company, processId));
     check(process == processes_bycompandid.end(), "process already exists");
 
     // Create new process
@@ -66,18 +64,19 @@ void tracelytics::newprocess (
         if (description) b.description = *description;
         if (version)     b.version     = *version;
 
-        // Process immediately
-        if (type == ProcessType::SPLIT || type == ProcessType::MERGE) {
-            b.status = ProcessStatus::PROCESSED;
+        // New process, so we substract inputs from our site
+        std::map<std::string, ProductQuantity> emptyDeltas;
+        processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActions::START_PROCESS, false);
 
+        // Process immediately
+        if (type == ProcessType::SPLIT || type == ProcessType::MERGE || type == ProcessType::SCRAP || type == ProcessType::ADJUSTMENT) {
+            b.status = ProcessStatus::PROCESSED;
             if (!endTime) {
                 b.endTime = timestamp;
             }
-        }
 
-        // New process, so we substract inputs from our site
-        std::map<std::string, ProductQuantity> emptyDeltas;
-        processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, false);
+            processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActions::FINISH_PROCESS, false);
+        }
     });
 }
 
@@ -106,15 +105,11 @@ void tracelytics::editprocess (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!processId.empty(), "process id is missing.");
-
-    // Generate checksum from processId
-    std::string process_checksum_string = company + ";" + processId;
-    checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
+    check(!processId.empty(), "process ID is missing.");
 
     // Access table and make sure process doesnt exist
     auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
-    auto process = processes_bycompandid.find(process_checksum);
+    auto process = processes_bycompandid.find(Checksum::PROCESS(company, processId));
     check(process != processes_bycompandid.end(), "process does not exist.");
     check(company == process->company && processId == process->processId, "process mismatch");
 
@@ -135,17 +130,17 @@ void tracelytics::editprocess (
         if (version)     b.version     = *version;
 
         // Edit deltas
-        if (b.status != ProcessStatus::PROCESSED) {
-          if (inputDeltas.size() > 0)
-            processcargo(b, b.inputs, inputDeltas, user, company, Actions::EDIT_PROCESS, false);
-          if (outputDeltas.size() > 0)
-            processcargo(b, b.outputs, outputDeltas, user, company, Actions::EDIT_PROCESS, true);
+        if (inputDeltas.size() > 0) {
+            processcargo(b, b.inputs, inputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::EDIT_INPUTS, false);
+        }
+        if (outputDeltas.size() > 0) {
+            processcargo(b, b.outputs, outputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::EDIT_OUTPUTS, true); // NOTE TRUE, TO SKIP UPSERT ON OUTPUTS
         }
 
         // Update inventory if processed
         if (justProcessed) {
           std::map<std::string, ProductQuantity> emptyDeltas;
-          processcargo(b, b.outputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, false);
+          processcargo(b, b.outputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::FINISH_PROCESS, false);
         }
     });
 }
@@ -157,7 +152,8 @@ void tracelytics::delprocess (
     const std::string& user,
     const std::string& company,
     const std::string& processId,
-    const time_point&  timestamp
+    const time_point&  timestamp,
+    const bool& cancel
 ) {
     // Authentication
     require_auth( get_self() );
@@ -165,18 +161,32 @@ void tracelytics::delprocess (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!processId.empty(), "process id is missing.");
-
-    // Generate checksum from processId
-    std::string process_checksum_string = company + ";" + processId;
-    checksum256 process_checksum = sha256(process_checksum_string.c_str(), process_checksum_string.size());
+    check(!processId.empty(), "process ID is missing.");
 
     // Access table and make sure process doesnt exist
     auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
-    auto process = processes_bycompandid.find(process_checksum);
+    auto process = processes_bycompandid.find(Checksum::PROCESS(company, processId));
     check(process != processes_bycompandid.end(), "process does not exist.");
-    check(company == process->company && processId == process->processId, "process mismatch");
+    check(processId == process->processId, "process mismatch");
 
-    // Delete process
-    processes_bycompandid.erase(process);
+    if (user != ADMIN) {
+        check(company == process->company, "only employees of " + process->company + " can " +
+                                        (cancel ? "cancel" : "delete") + " the process.");
+        check(process->status != ProcessStatus::PROCESSED, "cannot cancel or delete a processed process");
+        check(process->status != ProcessStatus::CANCELLED, "cannot cancel or delete a cancelled process");
+    }
+
+    if (cancel) {
+        processes_bycompandid.modify(process, get_self(), [&](auto& b) {
+            b.updatedBy = user;
+            b.updatedAt = timestamp;
+            b.status = ProcessStatus::CANCELLED;
+
+            // Refund
+            std::map<std::string, ProductQuantity> emptyDeltas;
+            processcargo(b, b.inputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::FINISH_PROCESS, false);
+        });
+    } else {
+        processes_bycompandid.erase(process);
+    }
 }

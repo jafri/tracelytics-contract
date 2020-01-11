@@ -21,16 +21,15 @@ void tracelytics::newmachine (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!machineId.empty(), "machine id is missing.");
+    check(!machineId.empty(), "machine ID is missing.");
     check(!site.empty(),      "site is missing.");
 
-    // Generate checksum from machineId
-    std::string machine_checksum_string = company + ";" + machineId;
-    checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
+    // Site exists
+    check_site_exists(company, site);
 
     // Access table and make sure machine doesnt exist
     auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
-    auto machine = machines_bycompandid.find(machine_checksum);
+    auto machine = machines_bycompandid.find(Checksum::MACHINE(company, machineId));
     check(machine == machines_bycompandid.end(), "machine already exists");
 
     // Create new machine
@@ -79,15 +78,11 @@ void tracelytics::editmachine (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!machineId.empty(), "machine id is missing.");
-
-    // Generate checksum from machineId
-    std::string machine_checksum_string = company + ";" + machineId;
-    checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
+    check(!machineId.empty(), "machine ID is missing.");
 
     // Access table and make sure machine exists
     auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
-    auto machine = machines_bycompandid.find( machine_checksum );
+    auto machine = machines_bycompandid.find(Checksum::MACHINE(company, machineId));
     check(machine != machines_bycompandid.end(), "machine does not exist.");
     check(company == machine->company && machineId == machine->machineId, "machine mismatch");
 
@@ -119,17 +114,17 @@ void tracelytics::delmachine (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!machineId.empty(), "machine id is missing.");
-
-    // Generate checksum from machineId
-    std::string machine_checksum_string = company + ";" + machineId;
-    checksum256 machine_checksum = sha256(machine_checksum_string.c_str(), machine_checksum_string.size());
+    check(!machineId.empty(), "machine ID is missing.");
 
     // Access table and make sure machine exists
     auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
-    auto machine = machines_bycompandid.find(machine_checksum);
+    auto machine = machines_bycompandid.find(Checksum::MACHINE(company, machineId));
     check(machine != machines_bycompandid.end(), "machine does not exist.");
-    check(company == machine->company && machineId == machine->machineId, "machine mismatch");
+    check(machineId == machine->machineId, "machine mismatch");
+
+    if (user != ADMIN) {
+        check(company == machine->company, "only employees of " + machine->company + " can delete the machine.");
+    }
 
     // Delete machine
     machines_bycompandid.erase(machine);

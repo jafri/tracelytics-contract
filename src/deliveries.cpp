@@ -13,6 +13,7 @@ void tracelytics::newdelivery (
     const std::string& fromCompany,
     const std::string& toCompany,
     const time_point& startTime,
+    const std::string& type,
     const std::map<std::string, ProductQuantity>& cargo,
     const time_point& timestamp,
     const std::map<std::string, all_type>& data,
@@ -30,62 +31,61 @@ void tracelytics::newdelivery (
     // Validation
     check(!user.empty(),        "user is missing.");
     check(!company.empty(),     "company is missing.");
-    check(!deliveryId.empty(),  "delivery id is missing.");
+    check(!deliveryId.empty(),  "delivery ID is missing.");
     // check(!route.empty(),      "route is missing."); // Can be empty
     check(!fromSite.empty(),    "from site is missing.");
     check(!toSite.empty(),      "to site is missing.");
     check(!fromCompany.empty(), "sending company is missing.");
     check(!toCompany.empty(),   "receiving company is missing.");
     check(company == fromCompany || company == toCompany, "must be part of sending or receiving company."); // IMPORTANT
-
-    // Generate checksum from deliveryId
-    std::string delivery_checksum_string = deliveryId + ";" + route;
-    checksum256 delivery_checksum = sha256(delivery_checksum_string.c_str(), delivery_checksum_string.size());
+    check(type == DeliveryActions::SEND_DELIVERY || type == DeliveryActions::RECEIVE_DELIVERY, "must send or receive."); // IMPORTANT
 
     // Access table and make sure delivery doesnt exist
     auto deliveries_byid = _deliveries.get_index<eosio::name("byroute")>();
-    auto delivery = deliveries_byid.find(delivery_checksum);
+    auto delivery = deliveries_byid.find(Checksum::DELIVERY(deliveryId, route));
     check(delivery == deliveries_byid.end(), "delivery already exists");
 
     // Create new delivery
     _deliveries.emplace(get_self(), [&](auto& d) {
-      d.index      = _deliveries.available_primary_key();
-      d.createdBy  = user;
-      d.updatedBy  = user;
-      d.createdAt  = timestamp;
-      d.updatedAt  = timestamp;
+        d.index     = _deliveries.available_primary_key();
+        d.createdBy = user;
+        d.updatedBy = user;
+        d.createdAt = timestamp;
+        d.updatedAt = timestamp;
 
-      d.deliveryId  = deliveryId;
-      d.route       = route;
-      d.fromSite    = fromSite;
-      d.toSite      = toSite;
-      d.fromCompany = fromCompany;
-      d.toCompany   = toCompany;
-      d.startTime   = startTime;
-      d.cargo       = cargo;
+        d.deliveryId  = deliveryId;
+        d.route       = route;
+        d.fromSite    = fromSite;
+        d.toSite      = toSite;
+        d.fromCompany = fromCompany;
+        d.toCompany   = toCompany;
+        d.startTime   = startTime;
+        d.type        = type;
+        d.cargo       = cargo;
 
-      // Optional
-      if (endTime)     d.endTime     = *endTime;
-      if (shipper)     d.shipper     = *shipper;
-      if (driver)      d.driver      = *driver;
-      if (status)      d.status      = *status;
-      if (description) d.description = *description;
-      if (version)     d.version     = *version;
+        // Optional
+        if (endTime)     d.endTime     = *endTime;
+        if (shipper)     d.shipper     = *shipper;
+        if (driver)      d.driver      = *driver;
+        if (status)      d.status      = *status;
+        if (description) d.description = *description;
+        if (version)     d.version     = *version;
 
-      // Optimization to end delivery if RECEIVING
-      // ~~~~~ MAGIC MOCK DELIVERY ~~~~~~~~~~~
-      // We dont charge the fromSite in this case
-      if (company == toCompany) {
-        d.status = DeliveryStatus::DELIVERED;
+        // Check sites exist
+        check_site_exists(fromCompany, fromSite);
+        auto site = check_site_exists(toCompany, toSite);
 
-        if (!endTime) {
-            d.endTime = timestamp;
+        // If not tracked, or receiving delivery (Magic delivery)
+        if (!site.tracked || type == DeliveryActions::RECEIVE_DELIVERY) {
+            d.status = DeliveryStatus::DELIVERED;
+            if (!endTime) {
+                d.endTime = timestamp;
+            }
         }
-      }
 
-      // SENDING delivery, so we substract inventory from our site
-      std::map<std::string, ProductQuantity> emptyDelta;
-      processcargo(d, d.cargo, emptyDelta, user, company, Actions::NEW_DELIVERY, false);
+        // SENDING delivery, so we substract inventory from our site
+        std::map<std::string, ProductQuantity> emptyDelta;
+        processcargo<Delivery>(d, d.cargo, emptyDelta, user, company, Actions::NEW_DELIVERY, type, false);
     });
 }
 
@@ -117,14 +117,15 @@ void tracelytics::editdelivery (
     // Validation
     check(!user.empty(),       "user is missing.");
     check(!company.empty(),    "company is missing.");
-    check(!deliveryId.empty(), "delivery id is missing.");
+    check(!deliveryId.empty(), "delivery ID is missing.");
     // check(!route.empty(),      "route is missing."); // Can be empty
 
     // Access table and make sure delivery exists
     auto deliveries_byid = _deliveries.get_index<eosio::name("byroute")>();
-    auto delivery = deliveries_byid.find(SHA256( company + ";" + deliveryId ));
+    auto delivery = deliveries_byid.find(Checksum::DELIVERY(deliveryId, route));
     check(delivery != deliveries_byid.end(), "delivery does not exist.");
     check(deliveryId == delivery->deliveryId && route == delivery->route, "delivery mismatch");
+    check(company == delivery->fromCompany || company == delivery->toCompany, "must be part of sending or receiving company."); // IMPORTANT
 
     // Edit delivery
     deliveries_byid.modify(delivery, get_self(), [&](auto& d) {
@@ -145,16 +146,15 @@ void tracelytics::editdelivery (
         if (description) d.description = *description;
         if (version)     d.version     = *version;
 
-        // Process edits
-        bool needToEditCargo = cargoDeltas.size() > 0 && d.status != DeliveryStatus::DELIVERED;
-        if (needToEditCargo) {
-            processcargo(d, d.cargo, cargoDeltas, user, company, Actions::EDIT_DELIVERY, false);
+        // TODO Check if we want to allow editing and delivering in same call
+        if (cargoDeltas.size() > 0) {
+            processcargo<Delivery>(d, d.cargo, cargoDeltas, user, company, Actions::EDIT_DELIVERY, DeliveryActions::EDIT_CARGO, false);
         }
 
         // Process delivery
         if (justDelivered) {
-            std::map<std::string, ProductQuantity> emptyCargo;
-            processcargo(d, d.cargo, emptyCargo, user, company, Actions::EDIT_DELIVERY, false);
+            std::map<std::string, ProductQuantity> emptyCargoDeltas;
+            processcargo<Delivery>(d, d.cargo, emptyCargoDeltas, user, company, Actions::EDIT_DELIVERY, DeliveryActions::RECEIVE_DELIVERY, false);
         }
     });
 }
@@ -167,7 +167,8 @@ void tracelytics::deldelivery (
     const std::string& company,
     const std::string& deliveryId,
     const std::string& route,
-    const time_point&  timestamp
+    const time_point&  timestamp,
+    const bool& cancel
 ) {
     // Authentication
     require_auth( get_self() );
@@ -175,22 +176,32 @@ void tracelytics::deldelivery (
     // Validation
     check(!user.empty(),       "user is missing.");
     check(!company.empty(),    "company is missing.");
-    check(!deliveryId.empty(), "delivery id is missing.");
+    check(!deliveryId.empty(), "delivery ID is missing.");
     // check(!route.empty(),      "route is missing."); // Can be empty
-
-    // Generate checksum from deliveryId
-    std::string delivery_checksum_string = company + ";" + deliveryId;
-    checksum256 delivery_checksum = sha256(delivery_checksum_string.c_str(), delivery_checksum_string.size());
 
     // Access table and make sure delivery exists
     auto deliveries_byid = _deliveries.get_index<eosio::name("byroute")>();
-    auto delivery = deliveries_byid.find(delivery_checksum);
+    auto delivery = deliveries_byid.find(Checksum::DELIVERY(deliveryId, route));
     check(delivery != deliveries_byid.end(), "delivery does not exist.");
-    check(company == delivery->fromCompany || company == delivery->toCompany, "the user must be a part of the sending or receiving company.");
     check(deliveryId == delivery->deliveryId && route == delivery->route, "delivery mismatch");
 
-    // TODO refund here
+    if (user != ADMIN) {
+        check(company == delivery->fromCompany, "the user must be a part of the sending company.");
+        check(delivery->status != DeliveryStatus::DELIVERED, "cannot cancel or delete a delivered delivery");
+        check(delivery->status != DeliveryStatus::CANCELLED, "cannot cancel or delete a cancelled delivery");
+    }
 
-    // Delete delivery
-    deliveries_byid.erase(delivery);
+    if (cancel) {
+        deliveries_byid.modify(delivery, get_self(), [&](auto& d) {
+            d.updatedBy = user;
+            d.updatedAt = timestamp;
+            d.status = DeliveryStatus::CANCELLED;
+
+            // Refund
+            std::map<std::string, ProductQuantity> emptyDeltas;
+            processcargo(d, d.cargo, emptyDeltas, user, company, Actions::DELETE_DELIVERY, DeliveryActions::CANCEL_DELIVERY, false);
+        });
+    } else {
+        deliveries_byid.erase(delivery);
+    }
 }

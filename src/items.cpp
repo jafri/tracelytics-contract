@@ -30,13 +30,12 @@ void tracelytics::newitem (
     check(!product.empty(), "product is missing.");
     check(quantity > 0,     "quantity must be positive to create item.");
 
-    // Generate checksum from itemId
-    std::string item_checksum_string = company + ";" + site + ";" + itemId;
-    checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
+    // Check sites exist
+    check_site_exists(company, site);
 
     // Access table and make sure item doesnt exist
     auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
-    auto item = items_bysiteitem.find(item_checksum);
+    auto item = items_bysiteitem.find(Checksum::ITEM(company, site, itemId));
     check(item == items_bysiteitem.end(), "Error creating item " + itemId + " as it already exists at site " + site);
 
     // Create new item
@@ -102,17 +101,13 @@ void tracelytics::edititem (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!itemId.empty(),  "item id is missing.");
+    check(!itemId.empty(),  "item ID is missing.");
     check(!site.empty(),    "site is missing.");
     check(quantity || delta, "both quantity and delta are missing. Must provide one."); // Only provide 1 of quantity or delta
 
-    // Generate checksum from itemId
-    std::string item_checksum_string = company + ";" + site + ";" + itemId;
-    checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
-
     // Access table and make sure item exists
     auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
-    auto item = items_bysiteitem.find( item_checksum );
+    auto item = items_bysiteitem.find(Checksum::ITEM(company, site, itemId));
     check(item != items_bysiteitem.end(), "Error editing item " + itemId + " as it does not exist at site " + site);
     check(company == item->company && site == item->site && itemId == item->itemId, "item mismatch");
 
@@ -185,18 +180,18 @@ void tracelytics::delitem (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!itemId.empty(),  "item id is missing.");
+    check(!itemId.empty(),  "item ID is missing.");
     check(!site.empty(),    "site is missing.");
-
-    // Generate checksum from itemId
-    std::string item_checksum_string = company + ";" + site + ";" + itemId;
-    checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
 
     // Access table and make sure item exists
     auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
-    auto item = items_bysiteitem.find(item_checksum);
+    auto item = items_bysiteitem.find(Checksum::ITEM(company, site, itemId));
     check(item != items_bysiteitem.end(), "Error deleting item " + itemId + " as it does not exist at site " + site);
-    check(company == item->company && site == item->site && itemId == item->itemId, "item mismatch");
+    check(site == item->site && itemId == item->itemId, "item mismatch");
+
+    if (user != ADMIN) {
+        check(company == item->company, "only employees of " + item->company + " can delete the item.");
+    }
 
     // Log quantity change
     tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), eosio::name("active")} );
@@ -233,13 +228,9 @@ void tracelytics::upsertitem (
     const std::string& actionId,
     const time_point& timestamp
 ) {
-    // Checksum
-    std::string item_checksum_string = company + ";" + site + ";" + item;
-    checksum256 item_checksum = sha256(item_checksum_string.c_str(), item_checksum_string.size());
-
     // Existing item
     auto items_bysiteitem = _items.get_index<eosio::name("bysiteitem")>();
-    auto existing_item = items_bysiteitem.find( item_checksum );
+    auto existing_item = items_bysiteitem.find(Checksum::ITEM(company, site, item));
 
     // Empty call data
     std::map<std::string, all_type> call_data;

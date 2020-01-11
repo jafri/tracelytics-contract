@@ -30,16 +30,12 @@ void tracelytics::newcompany (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!companyId.empty(), "company id is missing.");
+    check(!companyId.empty(), "company ID is missing.");
     check(!name.empty(),      "name is missing.");
-
-    // Generate checksum from companyId
-    std::string company_checksum_string = companyId;
-    checksum256 company_checksum = sha256(company_checksum_string.c_str(), company_checksum_string.size());
 
     // Access table and make sure company doesnt exist
     auto companies_byid = _companies.get_index<eosio::name("byid")>();
-    auto company_itr = companies_byid.find(company_checksum);
+    auto company_itr = companies_byid.find(Checksum::COMPANY(companyId));
     check(company_itr == companies_byid.end(), "company already exists");
 
     // Create new company
@@ -99,15 +95,11 @@ void tracelytics::editcompany (
     // Validation
     check(!user.empty(),       "user is missing.");
     check(!company.empty(),    "company is missing.");
-    check(!companyId.empty(),  "company id is missing.");
-
-    // Generate checksum from companyId
-    std::string company_checksum_string = companyId;
-    checksum256 company_checksum = sha256(company_checksum_string.c_str(), company_checksum_string.size());
+    check(!companyId.empty(),  "company ID is missing.");
 
     // Access table and make sure company exists
     auto companies_byid = _companies.get_index<eosio::name("byid")>();
-    auto company_itr = companies_byid.find( company_checksum );
+    auto company_itr = companies_byid.find(Checksum::COMPANY(companyId));
     check(company_itr != companies_byid.end(), "company does not exist.");
     check(companyId == company_itr->companyId, "company mismatch");
 
@@ -147,17 +139,17 @@ void tracelytics::delcompany (
     // Validation
     check(!user.empty(),       "user is missing.");
     check(!company.empty(),    "company is missing.");
-    check(!companyId.empty(),  "company id is missing.");
-
-    // Generate checksum from companyId
-    std::string company_checksum_string = companyId;
-    checksum256 company_checksum = sha256(company_checksum_string.c_str(), company_checksum_string.size());
+    check(!companyId.empty(),  "company ID is missing.");
 
     // Access table and make sure company exists
     auto companies_byid = _companies.get_index<eosio::name("byid")>();
-    auto company_itr = companies_byid.find(company_checksum);
+    auto company_itr = companies_byid.find(Checksum::COMPANY(companyId));
     check(company_itr != companies_byid.end(), "company does not exist.");
     check(companyId == company_itr->companyId, "company mismatch");
+
+    if (user != ADMIN) {
+        check(false, "the user must be an admin to delete a company");
+    }
 
     // Delete company
     companies_byid.erase(company_itr);

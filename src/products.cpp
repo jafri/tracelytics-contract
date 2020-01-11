@@ -24,19 +24,15 @@ void tracelytics::newproduct (
     // Validation
     check(!user.empty(),            "user is missing.");
     check(!company.empty(),         "company is missing.");
-    check(!productId.empty(),       "product id is missing.");
+    check(!productId.empty(),       "product ID is missing.");
     check(!name.empty(),            "name is missing.");
     check(!uom.empty(),             "unit of measure is missing.");
     check(defaultPrice >= 0,        "default price cannot be negative.");
     check(!defaultCurrency.empty(), "default currency is missing.");
 
-    // Generate checksum from productId
-    std::string product_checksum_string = productId;
-    checksum256 product_checksum = sha256(product_checksum_string.c_str(), product_checksum_string.size());
-
     // Access table and make sure product doesnt exist
     auto products_byid = _products.get_index<eosio::name("byid")>();
-    auto product = products_byid.find(product_checksum);
+    auto product = products_byid.find(Checksum::PRODUCT(productId));
     check(product == products_byid.end(), "product already exists");
 
     // Create new product
@@ -84,17 +80,17 @@ void tracelytics::editproduct (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!productId.empty(), "product id is missing.");
-
-    // Generate checksum from productId
-    std::string product_checksum_string = productId;
-    checksum256 product_checksum = sha256(product_checksum_string.c_str(), product_checksum_string.size());
+    check(!productId.empty(), "product ID is missing.");
 
     // Access table and make sure product exists
     auto products_byid = _products.get_index<eosio::name("byid")>();
-    auto product = products_byid.find( product_checksum );
+    auto product = products_byid.find(Checksum::PRODUCT(productId));
     check(product != products_byid.end(), "product does not exist.");
     check(productId == product->productId, "product mismatch");
+
+    if (user != ADMIN) {
+        check(user == product->createdBy, "only the creator of product " + product->productId + " (" + product->createdBy + ") can edit the product.");
+    }
 
     // Edit Product
     products_byid.modify(product, get_self(), [&](auto& p) {
@@ -127,17 +123,14 @@ void tracelytics::delproduct (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!productId.empty(), "product id is missing.");
-
-    // Generate checksum from productId
-    std::string product_checksum_string = productId;
-    checksum256 product_checksum = sha256(product_checksum_string.c_str(), product_checksum_string.size());
+    check(!productId.empty(), "product ID is missing.");
 
     // Access table and make sure product exists
     auto products_byid = _products.get_index<eosio::name("byid")>();
-    auto product = products_byid.find(product_checksum);
+    auto product = products_byid.find(Checksum::PRODUCT(productId));
     check(product != products_byid.end(), "product does not exist.");
     check(productId == product->productId, "product mismatch");
+    check(user == ADMIN || user == product->createdBy, "only the creator of product " + product->productId + " (" + product->createdBy + ") can delete the product.");
 
     // Delete product
     products_byid.erase(product);

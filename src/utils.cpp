@@ -7,7 +7,19 @@ void tracelytics::cleartable (const std::string& tableName) {
     cleanTable<inventory_log_table>();
   } else if (tableName == "item") {
     cleanTable<item_table>();
+  } else if (tableName == "user") {
+    cleanTable<user_table>();
+  } else if (tableName == "site") {
+    cleanTable<site_table>();
   }
+}
+
+void tracelytics::clearall () {
+  require_auth(get_self());
+  cleanTable<inventory_log_table>();
+  cleanTable<item_table>();
+  cleanTable<user_table>();
+  cleanTable<site_table>();
 }
 
 void tracelytics::ec_verify(std::string data, const signature &sig, const public_key &pk) {
@@ -16,11 +28,9 @@ void tracelytics::ec_verify(std::string data, const signature &sig, const public
   // print("VALID ECVERIFY");
 }
 
-void tracelytics::verify_auth(std::string company, std::string username, std::string entity, std::string action, std::string verifydata) {
+void tracelytics::verify_auth(std::string company, std::string userId, std::string entity, std::string action, std::string verifydata) {
     auto users_byid = _users.get_index<eosio::name("byid")>();
-    std::string user_checksum_string = company + ";" + username;
-    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
-    auto user = users_byid.find(user_checksum);
+    auto user = users_byid.find(Checksum::USER(userId));
     check( user != users_byid.end(), "user does not exist" );
     check( user->nonce == std::stoull(verifydata), "incorrect nonce" );
     check( std::count(user->permissions.begin(), user->permissions.end(), entity + ":" + action), "invalid permissions");

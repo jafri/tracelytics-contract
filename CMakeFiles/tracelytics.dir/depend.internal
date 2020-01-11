@@ -3,6 +3,8 @@
 
 tracelytics/CMakeFiles/tracelytics.dir/src/companies.cpp.obj
  /Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp
+ tracelytics/include/tracelytics/contract.hpp
+ tracelytics/include/tracelytics/deliveries.hpp
  tracelytics/include/tracelytics/tracelytics.hpp
  tracelytics/include/tracelytics/types.hpp
 tracelytics/CMakeFiles/tracelytics.dir/src/deliveries.cpp.obj

@@ -46,6 +46,7 @@ CONTRACT tracelytics : public contract {
                           const std::string& fromCompany,
                           const std::string& toCompany,
                           const time_point& startTime,
+                          const std::string& type,
                           const std::map<std::string, ProductQuantity>& cargo,
                           const time_point& timestamp,
                           const std::map<std::string, all_type>& data,
@@ -117,10 +118,11 @@ CONTRACT tracelytics : public contract {
                           const std::string& company,
                           const std::string& siteId,
                           const std::string& siteCompany,
-                          const std::string& address,
+                          const bool& tracked,
                           const time_point& timestamp,
                           const std::map<std::string, all_type>& data,
                           const optional<std::string>& name,
+                          const optional<std::string>& address,
                           const optional<std::string>& contact,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
@@ -135,6 +137,7 @@ CONTRACT tracelytics : public contract {
                           const optional<std::string>& firstName,
                           const optional<std::string>& lastName,
                           const optional<std::string>& email,
+                          const optional<std::string>& phone,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
 
@@ -234,6 +237,7 @@ CONTRACT tracelytics : public contract {
     ACTION editsite     ( const std::string& user,
                           const std::string& company,
                           const std::string& siteId,
+                          const bool& tracked,
                           const time_point& timestamp,
                           const std::map<std::string, all_type>& data,
                           const optional<std::string>& name,
@@ -252,6 +256,7 @@ CONTRACT tracelytics : public contract {
                           const optional<std::string>& firstName,
                           const optional<std::string>& lastName,
                           const optional<std::string>& email,
+                          const optional<std::string>& phone,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
 
@@ -264,7 +269,8 @@ CONTRACT tracelytics : public contract {
                           const std::string& company,
                           const std::string& deliveryId,
                           const std::string& route,
-                          const time_point&  timestamp );
+                          const time_point&  timestamp,
+                          const bool& cancel );
     ACTION delitem      ( const std::string& user,
                           const std::string& company,
                           const std::string& site,
@@ -279,7 +285,8 @@ CONTRACT tracelytics : public contract {
     ACTION delprocess   ( const std::string& user,
                           const std::string& company,
                           const std::string& processId,
-                          const time_point&  timestamp );
+                          const time_point&  timestamp,
+                          const bool& cancel );
     ACTION delproduct   ( const std::string& user,
                           const std::string& company,
                           const std::string& productId,
@@ -313,13 +320,14 @@ CONTRACT tracelytics : public contract {
                           const int64_t&     newQuantity);
 
     ACTION cleartable (const std::string& tableName);
+    ACTION clearall ();
 
     template <typename T>
     void cleanTable(){
       T db(get_self(), get_self().value);
       auto itr = db.end();
       while(db.begin() != itr){
-        itr = db.erase(itr);
+        itr = db.erase(--itr);
       }
     }
 
@@ -341,6 +349,9 @@ CONTRACT tracelytics : public contract {
     using delitem_action      = action_wrapper<name("delitem"),      &tracelytics::delitem>;
     using editprocess_action  = action_wrapper<name("editprocess"),  &tracelytics::editprocess>;
     using editdelivery_action = action_wrapper<name("editdelivery"), &tracelytics::editdelivery>;
+
+    // General function
+    static checksum256 SHA256(const std::string& stringToSha);
 
   private:
     TABLE Company {
@@ -364,11 +375,8 @@ CONTRACT tracelytics : public contract {
       time_point updatedAt;
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_id() const {
-        std::string final_checksum_string = companyId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t primary_key() const { return index;             };
+      checksum256 by_id()    const { return SHA256(companyId); };
     };
 
     TABLE Delivery {
@@ -384,6 +392,7 @@ CONTRACT tracelytics : public contract {
       std::string shipper;
       std::string driver;
       std::string status;
+      std::string type;
       std::string description;
       std::string version = "0.0.1";
       std::string createdBy;
@@ -396,78 +405,20 @@ CONTRACT tracelytics : public contract {
       uint64_t primary_key() const { return index; };
       std::string id() const { return deliveryId; };
 
-      checksum256 by_id() const {
-        std::string final_checksum_string = deliveryId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_route() const {
-        std::string final_checksum_string = deliveryId + ";" + route;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      checksum256 by_id()                       const { return SHA256(deliveryId                                    ); };
+      checksum256 by_route()                    const { return SHA256(deliveryId  + ";" + route                     ); };
+      checksum256 by_from_company_site_status() const { return SHA256(fromCompany + ";" + fromSite + ":" + status   ); }; // Raptor Site A -> * && (Status)
+      checksum256 by_to_company_site_status()   const { return SHA256(toCompany   + ";" + toSite   + ";" + status   ); };  // * -> Raptor Site A && (Status)
+      checksum256 by_from_to_site()             const { return SHA256(fromCompany + ";" + fromSite + ";" + toSite   ); };  // Raptor -> Supply Site A
+      checksum256 by_to_from_site()             const { return SHA256(toCompany   + ";" + toSite   + ";" + fromSite ); };  // Supply Site A -> Raptor
+      checksum256 by_from_to_company()          const { return SHA256(fromCompany + ";" + toCompany                 ); }; // Raptor <-> Supplier || Raptor <-> Raptor
 
-      // Raptor Site A -> * && (Status)
-      checksum256 by_from_company_site_status() const {
-        std::string final_checksum_string = fromCompany + ";" + fromSite + ":" + status;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // * -> Raptor Site A && (Status)
-      checksum256 by_to_company_site_status() const {
-        std::string final_checksum_string = toCompany + ";" + toSite + ";" + status;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-
-      // Raptor -> Supply Site A
-      checksum256 by_from_to_site() const {
-        std::string final_checksum_string = fromCompany + ";" + fromSite + ";" + toSite;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // Supply Site A -> Raptor
-      checksum256 by_to_from_site() const {
-        std::string final_checksum_string = toCompany + ";" + toSite + ";" + fromSite;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // Raptor <-> Supplier || Raptor <-> Raptor
-      checksum256 by_from_to_company() const {
-        std::string final_checksum_string = fromCompany + ";" + toCompany;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-
-      // Raptor Site A -> *
-      checksum256 by_from_site() const {
-        std::string final_checksum_string = fromCompany + ";" + fromSite;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // * -> Raptor Site A
-      checksum256 by_to_site() const {
-        std::string final_checksum_string = toCompany + ";" + toSite;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // Raptor -> *
-      checksum256 by_from_company() const {
-        std::string final_checksum_string = fromCompany;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // * -> Raptor
-      checksum256 by_to_company() const {
-        std::string final_checksum_string = toCompany;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-
-      uint128_t by_from_site_latest() const {
-        uint64_t truncatedHash = truncate_sha256_to_uint64(
-          SHA256(fromCompany + ";" + fromSite)
-        );
-        uint64_t count = updatedAt.elapsed.count();
-        return truncatedHash | count;
-      }
-
-      uint128_t by_to_site_latest() const {
-        uint64_t truncatedHash = truncate_sha256_to_uint64(
-          SHA256(toCompany + ";" + toSite)
-        );
-        uint64_t count = updatedAt.elapsed.count();
-        return truncatedHash | count;
-      }
+      checksum256 by_from_site()                const { return SHA256(fromCompany + ";" + fromSite                  ); }; // Raptor Site A -> *
+      checksum256 by_to_site()                  const { return SHA256(toCompany   + ";" + toSite                    ); }; // * -> Raptor Site A
+      checksum256 by_from_company()             const { return SHA256(fromCompany                                   ); }; // Raptor -> *
+      checksum256 by_to_company()               const { return SHA256(toCompany                                     ); }; // * -> Raptor
+      uint128_t   by_from_site_latest()         const { return ((uint128_t) truncate_sha256_to_uint64(SHA256(fromCompany + ";" + fromSite + ";" + status)) << 64) | updatedAt.elapsed.count(); };
+      uint128_t   by_to_site_latest()           const { return ((uint128_t) truncate_sha256_to_uint64(SHA256(toCompany   + ";" + toSite + ";" + status))   << 64) | updatedAt.elapsed.count(); };
     };
 
     TABLE InventoryLog {
@@ -489,39 +440,15 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_item() const {
-        std::string final_checksum_string = company + ";" + item;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_site() const {
-        std::string final_checksum_string = company + ";" + site;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_product() const {
-        std::string final_checksum_string = company + ";" + product;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_user() const {
-        std::string final_checksum_string = company + ";" + user;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_site_and_product() const {
-        std::string final_checksum_string = company + ";" + site + ";" + product;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_parent_action_id() const {
-        std::string final_checksum_string = company + ";" + parentActionId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_user_and_parent_action() const {
-        std::string final_checksum_string = company + ";" + user + ";" + parentAction;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t primary_key()                  const { return index;                                             };
+      checksum256 by_item()                   const { return SHA256(company + ";" + item);                      };
+      checksum256 by_company()                const { return SHA256(company);                                   };
+      checksum256 by_site()                   const { return SHA256(company + ";" + site);                      };
+      checksum256 by_product()                const { return SHA256(company + ";" + product);                   };
+      checksum256 by_user()                   const { return SHA256(company + ";" + user);                      };
+      checksum256 by_site_and_product()       const { return SHA256(company + ";" + site + ";" + product);      };
+      checksum256 by_parent_action_id()       const { return SHA256(company + ";" + parentActionId);            };
+      checksum256 by_user_and_parent_action() const { return SHA256(company + ";" + user + ";" + parentAction); };
     };
     TABLE Item {
       uint64_t    index;
@@ -540,41 +467,13 @@ CONTRACT tracelytics : public contract {
 
       uint64_t primary_key() const { return index; };
 
-      // Specific item at a single site (UNIQUE)
-      checksum256 by_site_and_item() const {
-        std::string final_checksum_string = company + ";" + site + ";" + itemId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // Specific item across all sites of a company
-      checksum256 by_company_and_id() const {
-        std::string final_checksum_string = company + ";" + itemId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // All items across a company
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // All items at a specific site
-      checksum256 by_site() const {
-        std::string final_checksum_string = company + ";" + site;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // All items matching product at company
-      checksum256 by_product() const {
-        std::string final_checksum_string = company + ";" + product;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // All items matching product at site
-      checksum256 by_site_and_product() const {
-        std::string final_checksum_string = company + ";" + site + ";" + product;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      // By the creator of the item
-      checksum256 by_creator() const {
-        std::string final_checksum_string = company + ";" + createdBy;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      checksum256 by_site_and_item()    const { return SHA256(company + ";" + site + ";" + itemId);  }; // Specific item at a single site (UNIQUE)
+      checksum256 by_company_and_id()   const { return SHA256(company + ";" + itemId);               }; // Specific item across all sites of a company
+      checksum256 by_company()          const { return SHA256(company);                              }; // All items across a company
+      checksum256 by_site()             const { return SHA256(company + ";" + site);                 }; // All items at a specific site
+      checksum256 by_product()          const { return SHA256(company + ";" + product);              }; // All items matching product at company
+      checksum256 by_site_and_product() const { return SHA256(company + ";" + site + ";" + product); }; // All items matching product at site
+      checksum256 by_creator()          const { return SHA256(company + ";" + createdBy);            }; // By the creator of the item
     };
 
     TABLE Machine {
@@ -592,19 +491,10 @@ CONTRACT tracelytics : public contract {
       std::vector<std::string> certifications;
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_company_and_id() const {
-        std::string final_checksum_string = company + ";" + machineId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_site() const {
-        std::string final_checksum_string = company + ";" + site;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t    primary_key()       const { return index;                             };
+      checksum256 by_company_and_id() const { return SHA256(company + ";" + machineId); };
+      checksum256 by_company()        const { return SHA256(company);                   };
+      checksum256 by_site()           const { return SHA256(company + ";" + site);      };
     };
 
     TABLE Process {
@@ -627,36 +517,16 @@ CONTRACT tracelytics : public contract {
       std::map<std::string, ProductQuantity> outputs;
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      std::string id() const { return processId; };
-      checksum256 by_company_and_id() const {
-        std::string final_checksum_string = company + ";" + processId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_type() const {
-        std::string final_checksum_string = company + ";" + type;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_creator() const {
-        std::string final_checksum_string = company + ";" + createdBy;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_updater() const {
-        std::string final_checksum_string = company + ";" + updatedBy;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_site() const {
-        std::string final_checksum_string = company + ";" + site;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_machine() const {
-        std::string final_checksum_string = company + ";" + machine;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t    primary_key()       const { return index;                             };
+      std::string id()                const { return processId;                         };
+
+      checksum256 by_company_and_id() const { return SHA256(company + ";" + processId); };
+      checksum256 by_company()        const { return SHA256(company);                   };
+      checksum256 by_type()           const { return SHA256(company + ";" + type);      };
+      checksum256 by_creator()        const { return SHA256(company + ";" + createdBy); };
+      checksum256 by_updater()        const { return SHA256(company + ";" + updatedBy); };
+      checksum256 by_site()           const { return SHA256(company + ";" + site);      };
+      checksum256 by_machine()        const { return SHA256(company + ";" + machine);   };
     };
 
     TABLE Product {
@@ -675,11 +545,8 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_id() const {
-        std::string final_checksum_string = productId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t    primary_key() const { return index;      };
+      checksum256 by_id()       const { return SHA256(productId); };
     };
     TABLE Recipe {
       uint64_t index;
@@ -696,15 +563,9 @@ CONTRACT tracelytics : public contract {
       std::vector<ProductQuantity> outputs;
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_company_and_id() const {
-        std::string final_checksum_string = company + ";" + recipeId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company + ";" + company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t    primary_key()       const { return index;                            };
+      checksum256 by_company_and_id() const { return SHA256(company + ";" + recipeId); };
+      checksum256 by_company()        const { return SHA256(company);                  };
     };
     TABLE Site {
       uint64_t index;
@@ -714,6 +575,7 @@ CONTRACT tracelytics : public contract {
       std::string address;
       std::string contact;
       std::string description;
+      bool tracked;
       std::string createdBy;
       std::string updatedBy;
       time_point createdAt;
@@ -721,15 +583,9 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_id() const {
-        std::string final_checksum_string = siteId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t    primary_key() const { return index;           };
+      checksum256 by_id()       const { return SHA256(siteId);  };
+      checksum256 by_company()  const { return SHA256(company); };
     };
     TABLE User {
       uint64_t index;
@@ -740,6 +596,7 @@ CONTRACT tracelytics : public contract {
       std::string firstName;
       std::string lastName;
       std::string email;
+      std::string phone;
       std::vector<std::string> permissions;
       std::vector<std::string> certifications;
       std::string description;
@@ -750,36 +607,27 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::map<std::string, all_type> data;
 
-      uint64_t primary_key() const { return index; };
-      checksum256 by_id() const {
-        std::string final_checksum_string = userId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company() const {
-        std::string final_checksum_string = company;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_company_and_user_id() const {
-        std::string final_checksum_string = company + ";" + userId;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_fullname() const {
-        std::string final_checksum_string = company + ";" + firstName + ";" + lastName;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
-      checksum256 by_email() const {
-        std::string final_checksum_string = company + ";" + email;
-        return sha256(final_checksum_string.c_str(), final_checksum_string.size());
-      }
+      uint64_t   primary_key()             const { return index;                                              };
+      checksum256 by_id()                  const { return SHA256(userId);                                     };
+      checksum256 by_company()             const { return SHA256(company);                                    };
+      checksum256 by_company_and_user_id() const { return SHA256(company + ";" + userId);                     };
+      checksum256 by_fullname()            const { return SHA256(company + ";" + firstName + ";" + lastName); };
+      checksum256 by_email()               const { return SHA256(company + ";" + email);                      };
 
-      EOSLIB_SERIALIZE( User, (index)(company)(userId)(key)(nonce)(firstName)(lastName)(email)(permissions)(certifications)(description)(createdBy)(updatedBy)(createdAt)(updatedAt)(version)(data) )
+      // ----------------------------------------
+      // EDIT THIS WHEN YOU ADD A FIELD TO USER
+      // ----------------------------------------
+      EOSLIB_SERIALIZE( User, (index)(company)(userId)(key)(nonce)
+                              (firstName)(lastName)(email)(phone)(permissions)
+                              (certifications)(description)(createdBy)(updatedBy)(createdAt)
+                              (updatedAt)(version)(data) )
     };
 
 
-    typedef multi_index<name("company"), Company,
+    typedef multi_index<eosio::name("company"), Company,
       indexed_by<name("byid"), const_mem_fun<Company, checksum256, &Company::by_id>>
     > company_table;
-    typedef multi_index<name("delivery"), Delivery,
+    typedef multi_index<eosio::name("delivery"), Delivery,
       indexed_by<name("byid"),         const_mem_fun<Delivery, checksum256, &Delivery::by_id>>,
       indexed_by<name("byroute"),      const_mem_fun<Delivery, checksum256, &Delivery::by_route>>,
       indexed_by<name("fromcompstat"), const_mem_fun<Delivery, checksum256, &Delivery::by_from_company_site_status>>,
@@ -794,7 +642,7 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("newfromsite"),  const_mem_fun<Delivery, uint128_t,   &Delivery::by_from_site_latest>>,
       indexed_by<name("newtosite"),    const_mem_fun<Delivery, uint128_t,   &Delivery::by_to_site_latest>>
     > delivery_table;
-    typedef multi_index<name("inventorylog"), InventoryLog,
+    typedef multi_index<eosio::name("inventorylog"), InventoryLog,
       indexed_by<name("byitem"),       const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_item>>,
       indexed_by<name("bycompany"),    const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_company>>,
       indexed_by<name("bysite"),       const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_site>>,
@@ -804,7 +652,7 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("byparentid"),   const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_parent_action_id>>,
       indexed_by<name("byuserparent"), const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_user_and_parent_action>>
     > inventory_log_table;
-    typedef multi_index<name("item"), Item,
+    typedef multi_index<eosio::name("item"), Item,
       indexed_by<name("bysiteitem"),  const_mem_fun<Item, checksum256, &Item::by_site_and_item>>,
       indexed_by<name("bycompandid"), const_mem_fun<Item, checksum256, &Item::by_company_and_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Item, checksum256, &Item::by_company>>,
@@ -813,12 +661,12 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("bysiteprod"),  const_mem_fun<Item, checksum256, &Item::by_site_and_product>>,
       indexed_by<name("bycreator"),   const_mem_fun<Item, checksum256, &Item::by_creator>>
     > item_table;
-    typedef multi_index<name("machine"), Machine,
+    typedef multi_index<eosio::name("machine"), Machine,
       indexed_by<name("bycompandid"), const_mem_fun<Machine, checksum256, &Machine::by_company_and_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Machine, checksum256, &Machine::by_company>>,
       indexed_by<name("bysite"),      const_mem_fun<Machine, checksum256, &Machine::by_site>>
     > machine_table;
-    typedef multi_index<name("process"), Process,
+    typedef multi_index<eosio::name("process"), Process,
       indexed_by<name("bycompandid"), const_mem_fun<Process, checksum256, &Process::by_company_and_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Process, checksum256, &Process::by_company>>,
       indexed_by<name("bytype"),      const_mem_fun<Process, checksum256, &Process::by_type>>,
@@ -827,18 +675,18 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("bymachine"),   const_mem_fun<Process, checksum256, &Process::by_machine>>,
       indexed_by<name("bysite"),      const_mem_fun<Process, checksum256, &Process::by_site>>
     > process_table;
-    typedef multi_index<name("product"), Product,
+    typedef multi_index<eosio::name("product"), Product,
       indexed_by<name("byid"),        const_mem_fun<Product, checksum256, &Product::by_id>>
     > product_table;
-    typedef multi_index<name("recipe"), Recipe,
+    typedef multi_index<eosio::name("recipe"), Recipe,
       indexed_by<name("bycompandid"), const_mem_fun<Recipe, checksum256, &Recipe:: by_company_and_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Recipe, checksum256, &Recipe:: by_company>>
     > recipe_table;
-    typedef multi_index<name("site"), Site,
+    typedef multi_index<eosio::name("site"), Site,
       indexed_by<name("byid"),        const_mem_fun<Site, checksum256, &Site::by_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Site, checksum256, &Site::by_company>>
     > site_table;
-    typedef multi_index<name("user"), User,
+    typedef multi_index<eosio::name("user"), User,
       indexed_by<name("byid"),        const_mem_fun<User, checksum256, &User::by_id>>,
       indexed_by<name("bycompandid"), const_mem_fun<User, checksum256, &User::by_company_and_user_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<User, checksum256, &User::by_company>>,
@@ -862,7 +710,6 @@ CONTRACT tracelytics : public contract {
     std::vector<std::string> split(std::string str, std::string token);
     std::string to_hex(const char* d, uint32_t s);
     static uint64_t truncate_sha256_to_uint64(const checksum256& sha256);
-    static checksum256 SHA256(const std::string& stringToSha);
 
     void upsertitem(
       const std::string& user,
@@ -885,6 +732,21 @@ CONTRACT tracelytics : public contract {
       const std::string& user,
       const std::string& company,
       const std::string& action,
+      const std::string& type,
       const bool& skipUpsert
     );
+    Site check_site_exists (const std::string& company, const std::string& site);
 };
+
+namespace Checksum
+{
+  inline eosio::checksum256 COMPANY (std::string companyId)                      { return tracelytics::SHA256(companyId); }
+  inline eosio::checksum256 MACHINE (std::string company, std::string machineId) { return tracelytics::SHA256(company + ";" + machineId); }
+  inline eosio::checksum256 PROCESS (std::string company, std::string processId) { return tracelytics::SHA256(company + ";" + processId); }
+  inline eosio::checksum256 PRODUCT (std::string productId)                      { return tracelytics::SHA256(productId); }
+  inline eosio::checksum256 RECIPE  (std::string company, std::string recipeId)  { return tracelytics::SHA256(company + ";" + recipeId); }
+  inline eosio::checksum256 SITE    (std::string siteId)                         { return tracelytics::SHA256(siteId); }
+  inline eosio::checksum256 USER    (std::string userId)                         { return tracelytics::SHA256(userId); }
+  inline eosio::checksum256 DELIVERY(std::string deliveryId, std::string route)  { return tracelytics::SHA256(deliveryId + ";" + route); }
+  inline eosio::checksum256 ITEM    (std::string company, std::string site, std::string itemId) { return tracelytics::SHA256(company + ";" + site + ";" + itemId); }
+}

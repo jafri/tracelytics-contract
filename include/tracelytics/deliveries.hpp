@@ -8,46 +8,48 @@ void tracelytics::processcargo (
   const std::string& user,
   const std::string& company,
   const std::string& action,
+  const std::string& type,
   const bool& skipUpsert
 ) {
-  bool editCargo = cargoDeltas.size() > 0;
+  auto mapOfItems = cargoDeltas.size() > 0 ? cargoDeltas : cargo;
 
-  for( auto const& [item, productAndQuantity] : editCargo ? cargoDeltas : cargo ) {
-    int64_t inventoryDelta;
+  for( auto const& [item, productAndQuantity] : mapOfItems ) {
+    int64_t inventoryDelta = 0;
     std::string inventoryDeltaSite;
 
-    // New Delivery/Process
-    if (!editCargo) {
-        // New Delivery
-        if constexpr (std::is_same_v<T, Delivery>) {
-            // Raptor -> Supplier
-            // Negative delta = CHARGE SITE
-            if (company == entity.fromCompany) {
-                inventoryDelta = -productAndQuantity.quantity;
-                inventoryDeltaSite = entity.fromSite;
-            // Supplier -> Raptor
-            // Positive delta = CREDIT SITE
-            // ~~~~~~~ MAGIC MOCK DELIVERY ~~~~~~~~~
-            // Just credits the receiving site without charging the sender
-            } else if (company == entity.toCompany) {
-                inventoryDelta = productAndQuantity.quantity;
-                inventoryDeltaSite = entity.toSite;
-            } else {
-                check(false, "user must be from sending or receiving company");
-            }
-        } else if constexpr (std::is_same_v<T, Process>) {
-            // Finish process, merge or split -> CREDIT Site
-            if (entity.status == ProcessStatus::PROCESSED) {
-              inventoryDelta = productAndQuantity.quantity;
-            // Start process -> CHARGE site
-            } else {
-              inventoryDelta = -productAndQuantity.quantity;
-            }
-            inventoryDeltaSite = entity.site;
+    // New Delivery/Process (No deltas)
+    if (cargoDeltas.size() == 0) {
+      if constexpr (std::is_same_v<T, Delivery>) {
+        // Send delivery: Raptor -> Supplier
+        if (type == DeliveryActions::SEND_DELIVERY) {
+          inventoryDelta = -productAndQuantity.quantity;
+          inventoryDeltaSite = entity.fromSite;
+        // Receive delivery: Supplier -> Raptor
+        } else if (type == DeliveryActions::RECEIVE_DELIVERY) {
+          inventoryDelta = productAndQuantity.quantity;
+          inventoryDeltaSite = entity.toSite;
+        } else if (type == DeliveryActions::CANCEL_DELIVERY) {
+          inventoryDelta = productAndQuantity.quantity;
+          inventoryDeltaSite = entity.fromSite;
         } else {
-            check(false, "only delivery and process are allowed");
+          check(false, "not of type send delivery, receive delivery or receive magic delivery.");
         }
-    // Edit Delivery/Process
+      } else if constexpr (std::is_same_v<T, Process>) {
+        inventoryDeltaSite = entity.site;
+
+        // Start process -> CHARGE site
+        if (type == ProcessActions::START_PROCESS) {
+          inventoryDelta = -productAndQuantity.quantity;
+        // Finish process or merge or split -> CREDIT Site
+        } else if (type == ProcessActions::FINISH_PROCESS) {
+          inventoryDelta = productAndQuantity.quantity;
+        } else {
+          check(false, "not of type start process, finish process, split or merge");
+        }
+      } else {
+        check(false, "only delivery and process are allowed");
+      }
+    // Edit Delivery/Process (deltas)
     } else {
       /**
        * inventoryDelta has 3 states
@@ -65,39 +67,37 @@ void tracelytics::processcargo (
         check(false, "only delivery and process are allowed");
       }
 
-      // Ensure new quantity is zero or positive
-      check(productAndQuantity.quantity >= 0, "quantity in delivery must be zero or positive for item " + item);
-
-      // Update cargo
-      if (productAndQuantity.quantity > 0) {
-          cargo[item] = productAndQuantity;
-      } else if (productAndQuantity.quantity == 0) {
-          cargo.erase(item);
-      }
-
       // In cargo = POSITIVE/NEGATIVE DELTA
       if (cargo.count(item) > 0) {
-          inventoryDelta = cargo[item].quantity - productAndQuantity.quantity;
+        inventoryDelta = cargo[item].quantity - productAndQuantity.quantity;
       // Not in cargo = NEGATIVE DELTA
       } else {
-          inventoryDelta = -productAndQuantity.quantity;
+        inventoryDelta = -productAndQuantity.quantity;
+      }
+
+      // Update cargo with new quantity
+      if (productAndQuantity.quantity > 0) {
+        cargo[item] = productAndQuantity;
+      } else if (productAndQuantity.quantity == 0) {
+        cargo.erase(item);
+      } else {
+        // Ensure new quantity is zero or positive
+        check(false, "quantity in delivery must be zero or positive for item " + item);
       }
     }
 
     // Skip if delta is 0, as nothing changes
-    if (inventoryDelta == 0 || skipUpsert) {
-        continue;
+    if (!skipUpsert && inventoryDelta != 0) {
+      upsertitem(user,
+                company,
+                inventoryDeltaSite,
+                item,
+                productAndQuantity.product,
+                inventoryDelta,
+                productAndQuantity.metadata,
+                action,
+                entity.id(),
+                entity.updatedAt);
     }
-
-    upsertitem(user,
-              company,
-              inventoryDeltaSite,
-              item,
-              productAndQuantity.product,
-              inventoryDelta,
-              productAndQuantity.metadata,
-              action,
-              entity.id(),
-              entity.updatedAt);
   }
 };

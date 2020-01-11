@@ -24,74 +24,58 @@ struct ProductQuantity: ProductQuantityBase {
   std::map<std::string, std::string> metadata;
 };
 
-typedef std::variant<
-  char,
-  bool,
-  uint64_t,
-  uint16_t,
-  int32_t,
-  uint32_t,
-  int64_t,
-  uint64_t,
-  int128_t,
-  uint128_t,
-  signed_int,
-  unsigned_int,
-  float,
-  double,
-  long double,
-  time_point,
-  time_point_sec,
-  name,
-  std::string,
-  block_timestamp,
-  checksum160,
-  checksum256,
-  checksum512,
-  public_key,
-  signature,
-  symbol,
-  symbol_code,
-  asset,
-  extended_asset
-> all_type;
-
-typedef std::variant<
-  int64_t,
-  uint64_t,
-  name,
-  std::string,
-  block_timestamp,
-  checksum256,
-  public_key,
-  signature,
-  extended_asset
-> all_basic_type;
-
-namespace DeliveryStatus
-{
-  const std::string LOADING   = "loading";
-  const std::string SHIPPED   = "shipped";
-  const std::string DELIVERED = "delivered";
-}
-
-namespace DeliveryType
-{
-  const std::string RECEIVE = "receive";
-  const std::string SEND    = "send";
-}
-
-namespace ProcessType
-{
-  const std::string PROCESS = "process";
-  const std::string SPLIT   = "split";
-  const std::string MERGE   = "merge";
-}
+#define all_type std::variant< \
+  char, \
+  uint16_t, \
+  int32_t, \
+  uint32_t, \
+  int64_t, \
+  uint64_t, \
+  int128_t, \
+  uint128_t, \
+  signed_int, \
+  unsigned_int, \
+  float, \
+  double, \
+  long double, \
+  time_point, \
+  time_point_sec, \
+  eosio::name, \
+  std::string, \
+  eosio::block_timestamp, \
+  eosio::checksum160, \
+  eosio::checksum256, \
+  eosio::checksum512, \
+  eosio::public_key, \
+  eosio::signature, \
+  eosio::symbol, \
+  eosio::symbol_code, \
+  eosio::asset, \
+  eosio::extended_asset \
+>
 
 namespace ProcessStatus
 {
-  const std::string PROCESSED = "processed";
+  const std::string PROCESSING = "processing";
+  const std::string PROCESSED  = "processed";
+  const std::string CANCELLED  = "cancelled";
 }
+namespace ProcessType
+{
+  const std::string PROCESS    = "process";
+  const std::string SPLIT      = "split";
+  const std::string MERGE      = "merge";
+  const std::string ADJUSTMENT = "adjustment";
+  const std::string SCRAP      = "scrap";
+}
+namespace ProcessActions
+{
+  const std::string START_PROCESS          = "Start Process";
+  const std::string EDIT_INPUTS            = "Edit Inputs";
+  const std::string EDIT_OUTPUTS           = "Edit Outputs";
+  const std::string FINISH_PROCESS         = "Finish Process";
+}
+
 
 namespace CargoMovementType
 {
@@ -99,21 +83,33 @@ namespace CargoMovementType
   const std::string CREDIT = "credit";
 }
 
-namespace Tables
+
+
+namespace DeliveryStatus
 {
-  const std::string DELIVERY = "delivery";
-  const std::string ITEM = "item";
-  const std::string PROCESS = "process";
+  const std::string CANCELLED = "cancelled";
+  const std::string LOADING   = "loading";
+  const std::string SHIPPED   = "shipped";
+  const std::string DELIVERED = "delivered";
 }
+namespace DeliveryActions
+{
+  const std::string SEND_DELIVERY    = "Send Delivery";
+  const std::string EDIT_CARGO       = "Edit Cargo";
+  const std::string RECEIVE_DELIVERY = "Receive Delivery";
+  const std::string CANCEL_DELIVERY  = "Cancel Delivery";
+}
+
 
 namespace Actions
 {
   const std::string NEW_DELIVERY    = "newdelivery";
-  const std::string EDIT_DELIVERY    = "editdelivery";
-  const std::string NEW_ITEM         = "newitem";
-  const std::string EDIT_ITEM        = "edititem";
-  const std::string DELETE_ITEM      = "delitem";
-  const std::string NEW_PROCESS      = "newprocess";
-  const std::string EDIT_PROCESS     = "editprocess";
-  const std::string DELETE_PROCESS   = "delprocess";
+  const std::string EDIT_DELIVERY   = "editdelivery";
+  const std::string DELETE_DELIVERY = "deldelivery";
+  const std::string NEW_ITEM        = "newitem";
+  const std::string EDIT_ITEM       = "edititem";
+  const std::string DELETE_ITEM     = "delitem";
+  const std::string NEW_PROCESS     = "newprocess";
+  const std::string EDIT_PROCESS    = "editprocess";
+  const std::string DELETE_PROCESS  = "delprocess";
 }

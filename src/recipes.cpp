@@ -22,17 +22,13 @@ void tracelytics::newrecipe (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!recipeId.empty(),  "recipe id is missing.");
+    check(!recipeId.empty(),  "recipe ID is missing.");
     check(inputs.size() > 0,  "inputs are empty.");
     check(outputs.size() > 0, "outputs are empty.");
 
-    // Generate checksum from recipeId
-    std::string recipe_checksum_string = company + ";" + recipeId;
-    checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
-
     // Access table and make sure recipe doesnt exist
     auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
-    auto recipe = recipes_bycompandid.find(recipe_checksum);
+    auto recipe = recipes_bycompandid.find(Checksum::RECIPE(company, recipeId));
     check(recipe == recipes_bycompandid.end(), "recipe already exists");
 
     // Create new recipe
@@ -77,17 +73,13 @@ void tracelytics::editrecipe (
     // Validation
     check(!user.empty(),      "user is missing.");
     check(!company.empty(),   "company is missing.");
-    check(!recipeId.empty(),  "recipe id is missing.");
+    check(!recipeId.empty(),  "recipe ID is missing.");
     check(inputs.size() > 0,  "inputs are empty.");
     check(outputs.size() > 0, "outputs are empty.");
 
-    // Generate checksum from recipeId
-    std::string recipe_checksum_string = company + ";" + recipeId;
-    checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
-
     // Access table and make sure recipe exists
     auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
-    auto recipe = recipes_bycompandid.find( recipe_checksum );
+    auto recipe = recipes_bycompandid.find(Checksum::RECIPE(company, recipeId));
     check(recipe != recipes_bycompandid.end(), "recipe does not exist.");
     check(company == recipe->company && recipeId == recipe->recipeId, "recipe mismatch");
 
@@ -121,17 +113,17 @@ void tracelytics::delrecipe (
     // Validation
     check(!user.empty(),     "user is missing.");
     check(!company.empty(),  "company is missing.");
-    check(!recipeId.empty(), "recipe id is missing.");
-
-    // Generate checksum from recipeId
-    std::string recipe_checksum_string = company + ";" + recipeId;
-    checksum256 recipe_checksum = sha256(recipe_checksum_string.c_str(), recipe_checksum_string.size());
+    check(!recipeId.empty(), "recipe ID is missing.");
 
     // Access table and make sure recipe exists
     auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
-    auto recipe = recipes_bycompandid.find(recipe_checksum);
+    auto recipe = recipes_bycompandid.find(Checksum::RECIPE(company, recipeId));
     check(recipe != recipes_bycompandid.end(), "recipe does not exist.");
-    check(company == recipe->company && recipeId == recipe->recipeId, "recipe mismatch");
+    check(recipeId == recipe->recipeId, "recipe mismatch");
+
+    if (user != ADMIN) {
+        check(company == recipe->company, "only employees of " + recipe->company + " can delete the recipe.");
+    }
 
     // Delete recipe
     recipes_bycompandid.erase(recipe);

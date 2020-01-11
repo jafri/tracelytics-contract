@@ -16,6 +16,7 @@ void tracelytics::newuser (
     const optional<std::string>& firstName,
     const optional<std::string>& lastName,
     const optional<std::string>& email,
+    const optional<std::string>& phone,
     const optional<std::string>& description,
     const optional<std::string>& version
 ) {
@@ -25,15 +26,11 @@ void tracelytics::newuser (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!userId.empty(),  "user id is missing.");
-
-    // Generate checksum from userId
-    std::string user_checksum_string = userId;
-    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
+    check(!userId.empty(),  "user ID is missing.");
 
     // Access table and make sure user doesnt exist
     auto users_byid = _users.get_index<eosio::name("byid")>();
-    auto existing_user = users_byid.find(user_checksum);
+    auto existing_user = users_byid.find(Checksum::USER(userId));
     check(existing_user == users_byid.end(), "user already exists");
 
     // Create new user
@@ -75,6 +72,7 @@ void tracelytics::edituser (
     const optional<std::string>& firstName,
     const optional<std::string>& lastName,
     const optional<std::string>& email,
+    const optional<std::string>& phone,
     const optional<std::string>& description,
     const optional<std::string>& version
 ) {
@@ -84,15 +82,11 @@ void tracelytics::edituser (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!userId.empty(),  "user id is missing.");
-
-    // Generate checksum from userId
-    std::string user_checksum_string = userId;
-    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
+    check(!userId.empty(),  "user ID is missing.");
 
     // Access table and make sure user exists
     auto users_byid = _users.get_index<eosio::name("byid")>();
-    auto existing_user = users_byid.find( user_checksum );
+    auto existing_user = users_byid.find(Checksum::USER(userId));
     check(existing_user != users_byid.end(), "user does not exist.");
     check(userId == existing_user->userId, "user mismatch");
 
@@ -129,17 +123,17 @@ void tracelytics::deluser (
     // Validation
     check(!user.empty(),    "user is missing.");
     check(!company.empty(), "company is missing.");
-    check(!userId.empty(),  "user id is missing.");
-
-    // Generate checksum from userId
-    std::string user_checksum_string = userId;
-    checksum256 user_checksum = sha256(user_checksum_string.c_str(), user_checksum_string.size());
+    check(!userId.empty(),  "user ID is missing.");
 
     // Access table and make sure user exists
     auto users_byid = _users.get_index<eosio::name("byid")>();
-    auto existing_user = users_byid.find(user_checksum);
+    auto existing_user = users_byid.find(Checksum::USER(userId));
     check(existing_user != users_byid.end(), "user does not exist.");
     check(userId == existing_user->userId, "user mismatch");
+
+    if (user != ADMIN) {
+        check(company == existing_user->company, "only employees of " + existing_user->company + " can delete the user.");
+    }
 
     // Delete user
     users_byid.erase(existing_user);

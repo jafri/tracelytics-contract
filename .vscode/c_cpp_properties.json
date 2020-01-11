@@ -4,8 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/jafri/eosio.cdt/build/include/**",
-                "/Users/jafri/eosio.contracts/**"
+                "/Users/jafri/eosio.cdt/build/include/**"
             ],
             "defines": [],
             "macFrameworkPath": [
