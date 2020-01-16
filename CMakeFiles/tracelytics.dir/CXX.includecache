@@ -6,31 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/items.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/machines.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/products.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/recipes.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
 /Users/jafri/eosio.contracts/contracts/tracelytics/src/sites.cpp
-tracelytics/tracelytics.hpp
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
-
-/Users/jafri/eosio.contracts/contracts/tracelytics/src/users.cpp
 tracelytics/tracelytics.hpp
 /Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
 

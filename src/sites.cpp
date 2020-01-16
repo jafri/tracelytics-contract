@@ -28,10 +28,15 @@ void tracelytics::newsite (
     check(!siteId.empty(),      "site ID is missing.");
     check(!siteCompany.empty(), "site company is missing.");
 
-    // Access table and make sure site doesnt exist
+    // Access table and make sure site does NOT EXIST
     auto sites_byid = _sites.get_index<eosio::name("byid")>();
     auto site = sites_byid.find(Checksum::SITE(siteId));
     check(site == sites_byid.end(), "site already exists");
+
+    // Access table and make sure company EXISTS
+    auto companies_byid = _companies.get_index<eosio::name("byid")>();
+    auto company_itr = companies_byid.find(Checksum::COMPANY(siteCompany));
+    check(company_itr != companies_byid.end(), "company " + siteCompany + " does not exist");
 
     // Create new site
     _sites.emplace(get_self(), [&](auto& s) {

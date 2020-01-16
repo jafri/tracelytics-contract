@@ -20,7 +20,8 @@
   },
   "scripts": {
     "test": "mocha **/*.spec.js",
-    "deploy": "node test/setup.js",
+    "deploy": "KEY=EOS85QBLgzPkyBV38NT5gqnH6ST6YNmQzVSbp5Tm6ShgcUNsruZEG CONTRACT=tracelytics node test/setup.js",
+    "deployjungle": "KEY=EOS85QBLgzPkyBV38NT5gqnH6ST6YNmQzVSbp5Tm6ShgcUNsruZEG CONTRACT=tracelytics node test/setup.js",
     "all": "make -j && npm run deploy && npm run test"
   },
   "keywords": [],

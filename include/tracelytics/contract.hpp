@@ -407,7 +407,7 @@ CONTRACT tracelytics : public contract {
 
       checksum256 by_id()                       const { return SHA256(deliveryId                                    ); };
       checksum256 by_route()                    const { return SHA256(deliveryId  + ";" + route                     ); };
-      checksum256 by_from_company_site_status() const { return SHA256(fromCompany + ";" + fromSite + ":" + status   ); }; // Raptor Site A -> * && (Status)
+      checksum256 by_from_company_site_status() const { return SHA256(fromCompany + ";" + fromSite + ";" + status   ); }; // Raptor Site A -> * && (Status)
       checksum256 by_to_company_site_status()   const { return SHA256(toCompany   + ";" + toSite   + ";" + status   ); };  // * -> Raptor Site A && (Status)
       checksum256 by_from_to_site()             const { return SHA256(fromCompany + ";" + fromSite + ";" + toSite   ); };  // Raptor -> Supply Site A
       checksum256 by_to_from_site()             const { return SHA256(toCompany   + ";" + toSite   + ";" + fromSite ); };  // Supply Site A -> Raptor
@@ -520,13 +520,15 @@ CONTRACT tracelytics : public contract {
       uint64_t    primary_key()       const { return index;                             };
       std::string id()                const { return processId;                         };
 
-      checksum256 by_company_and_id() const { return SHA256(company + ";" + processId); };
-      checksum256 by_company()        const { return SHA256(company);                   };
-      checksum256 by_type()           const { return SHA256(company + ";" + type);      };
-      checksum256 by_creator()        const { return SHA256(company + ";" + createdBy); };
-      checksum256 by_updater()        const { return SHA256(company + ";" + updatedBy); };
-      checksum256 by_site()           const { return SHA256(company + ";" + site);      };
-      checksum256 by_machine()        const { return SHA256(company + ";" + machine);   };
+      checksum256 by_company_and_id() const { return SHA256(company + ";" + processId          );   };
+      checksum256 by_company()        const { return SHA256(company                            );   };
+      checksum256 by_type()           const { return SHA256(company + ";" + type               );   };
+      checksum256 by_creator()        const { return SHA256(company + ";" + createdBy          );   };
+      checksum256 by_updater()        const { return SHA256(company + ";" + updatedBy          );   };
+      checksum256 by_site()           const { return SHA256(company + ";" + site               );   };
+      checksum256 by_site_status()    const { return SHA256(company + ";" + site + ";" + status);   };
+      checksum256 by_site_type()      const { return SHA256(company + ";" + site + ";" + type  );   };
+      checksum256 by_machine()        const { return SHA256(company + ";" + machine            );   };
     };
 
     TABLE Product {
@@ -667,14 +669,17 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("bysite"),      const_mem_fun<Machine, checksum256, &Machine::by_site>>
     > machine_table;
     typedef multi_index<eosio::name("process"), Process,
-      indexed_by<name("bycompandid"), const_mem_fun<Process, checksum256, &Process::by_company_and_id>>,
-      indexed_by<name("bycompany"),   const_mem_fun<Process, checksum256, &Process::by_company>>,
-      indexed_by<name("bytype"),      const_mem_fun<Process, checksum256, &Process::by_type>>,
-      indexed_by<name("bycreator"),   const_mem_fun<Process, checksum256, &Process::by_creator>>,
-      indexed_by<name("byupdater"),   const_mem_fun<Process, checksum256, &Process::by_updater>>,
-      indexed_by<name("bymachine"),   const_mem_fun<Process, checksum256, &Process::by_machine>>,
-      indexed_by<name("bysite"),      const_mem_fun<Process, checksum256, &Process::by_site>>
+      indexed_by<name("bycompandid"),  const_mem_fun<Process, checksum256, &Process::by_company_and_id>>,
+      indexed_by<name("bycompany"),    const_mem_fun<Process, checksum256, &Process::by_company>>,
+      indexed_by<name("bytype"),       const_mem_fun<Process, checksum256, &Process::by_type>>,
+      indexed_by<name("bycreator"),    const_mem_fun<Process, checksum256, &Process::by_creator>>,
+      indexed_by<name("byupdater"),    const_mem_fun<Process, checksum256, &Process::by_updater>>,
+      indexed_by<name("bysite"),       const_mem_fun<Process, checksum256, &Process::by_site>>,
+      indexed_by<name("bysitestatus"), const_mem_fun<Process, checksum256, &Process::by_site_status>>,
+      indexed_by<name("bysitetype"),   const_mem_fun<Process, checksum256, &Process::by_site_type>>,
+      indexed_by<name("bymachine"),    const_mem_fun<Process, checksum256, &Process::by_machine>>
     > process_table;
+
     typedef multi_index<eosio::name("product"), Product,
       indexed_by<name("byid"),        const_mem_fun<Product, checksum256, &Product::by_id>>
     > product_table;

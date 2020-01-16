@@ -18,8 +18,12 @@ void tracelytics::clearall () {
   require_auth(get_self());
   cleanTable<inventory_log_table>();
   cleanTable<item_table>();
-  cleanTable<user_table>();
+  cleanTable<machine_table>();
+  cleanTable<product_table>();
   cleanTable<site_table>();
+  cleanTable<user_table>();
+  cleanTable<delivery_table>();
+  cleanTable<process_table>();
 }
 
 void tracelytics::ec_verify(std::string data, const signature &sig, const public_key &pk) {
@@ -33,7 +37,7 @@ void tracelytics::verify_auth(std::string company, std::string userId, std::stri
     auto user = users_byid.find(Checksum::USER(userId));
     check( user != users_byid.end(), "user does not exist" );
     check( user->nonce == std::stoull(verifydata), "incorrect nonce" );
-    check( std::count(user->permissions.begin(), user->permissions.end(), entity + ":" + action), "invalid permissions");
+    check( std::count(user->permissions.begin(), user->permissions.end(), entity + ";" + action), "invalid permissions");
 }
 
 std::vector<std::string> tracelytics::split(std::string str, std::string token){
