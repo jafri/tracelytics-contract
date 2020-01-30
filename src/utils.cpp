@@ -17,6 +17,7 @@ void tracelytics::cleartable (const std::string& tableName) {
 void tracelytics::clearall () {
   require_auth(get_self());
   cleanTable<inventory_log_table>();
+  cleanTable<company_table>();
   cleanTable<item_table>();
   cleanTable<machine_table>();
   cleanTable<product_table>();
@@ -56,6 +57,11 @@ std::vector<std::string> tracelytics::split(std::string str, std::string token){
     }
   }
   return result;
+}
+
+std::string tracelytics::checksum_to_hex(const checksum256& cs) {
+  auto arr = cs.extract_as_byte_array();
+  return to_hex((const char*)arr.data(), arr.size());
 }
 
 std::string tracelytics::to_hex(const char* d, uint32_t s) {

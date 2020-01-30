@@ -10,7 +10,7 @@ void tracelytics::newcompany (
     const std::string& name,
 
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& legalName,
     const optional<std::string>& country,
@@ -74,7 +74,7 @@ void tracelytics::editcompany (
     const std::string& companyId,
 
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& legalName,

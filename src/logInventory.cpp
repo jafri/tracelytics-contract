@@ -6,25 +6,29 @@ void tracelytics::loginventory (
     const std::string& item,
     const std::string& site,
     const std::string& product,
+    const std::string& delivery,
     std::map<std::string, std::string> metadata,
     const std::string& action,
     const std::string& parentAction,
     const std::string& parentActionId,
     const time_point&  timestamp,
     const std::string& version,
-    const int64_t&     oldQuantity,
-    const int64_t&     newQuantity
+    const double&     oldQuantity,
+    const double&     newQuantity
 ) {
+    // Authentication
     require_auth( get_self() );
 
     // Log
-    _inventory_logs.emplace(get_self(), [&](auto& i) {
-        i.index          = _inventory_logs.available_primary_key();
+    inventory_log_table inventory_logs(get_self(), get_self().value);
+    inventory_logs.emplace(get_self(), [&](auto& i) {
+        i.index          = inventory_logs.available_primary_key();
         i.user           = user;
         i.company        = company;
         i.item           = item;
         i.site           = site;
         i.product        = product;
+        i.delivery       = delivery;
         i.action         = action;
         i.parentAction   = parentAction;
         i.parentActionId = parentActionId;

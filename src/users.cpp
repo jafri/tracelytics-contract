@@ -10,7 +10,7 @@ void tracelytics::newuser (
     const std::vector<std::string>& permissions,
     const std::vector<std::string>& certifications,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<public_key>& key,
     const optional<std::string>& firstName,
@@ -66,7 +66,7 @@ void tracelytics::edituser (
     const std::vector<std::string>& permissions,
     const std::vector<std::string>& certifications,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<public_key>& key,
     const optional<std::string>& firstName,
@@ -89,6 +89,10 @@ void tracelytics::edituser (
     auto existing_user = users_byid.find(Checksum::USER(userId));
     check(existing_user != users_byid.end(), "user does not exist.");
     check(userId == existing_user->userId, "user mismatch");
+
+    if (user != ADMIN) {
+        check(company == existing_user->company, "only employees of " + existing_user->company + " can edit the user.");
+    }
 
     // Edit User
     users_byid.modify(existing_user, get_self(), [&](auto& u) {

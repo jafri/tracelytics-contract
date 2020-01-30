@@ -6,15 +6,59 @@
 
 #IncludeRegexTransform: 
 
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/companies.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/deliveries.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/items.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/logInventory.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/machines.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/processes.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/products.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/recipes.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
 /Users/jafri/eosio.contracts/contracts/tracelytics/src/sites.cpp
 tracelytics/tracelytics.hpp
 /Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
 
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/users.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/utils.cpp
+tracelytics/tracelytics.hpp
+/Users/jafri/eosio.contracts/contracts/tracelytics/src/tracelytics/tracelytics.hpp
+
 tracelytics/include/tracelytics/contract.hpp
-tracelytics/types.hpp
--
 
 tracelytics/include/tracelytics/deliveries.hpp
+
+tracelytics/include/tracelytics/processes.hpp
 
 tracelytics/include/tracelytics/tracelytics.hpp
 tracelytics/types.hpp
@@ -22,6 +66,8 @@ tracelytics/types.hpp
 tracelytics/contract.hpp
 -
 tracelytics/deliveries.hpp
+-
+tracelytics/processes.hpp
 -
 
 tracelytics/include/tracelytics/types.hpp
@@ -42,7 +88,5 @@ string
 variant
 -
 type_traits
--
-any
 -
 

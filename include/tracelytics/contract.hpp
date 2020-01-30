@@ -1,7 +1,5 @@
 #pragma once
 
-#include <tracelytics/types.hpp>
-
 CONTRACT tracelytics : public contract {
   using contract::contract;
 
@@ -25,7 +23,7 @@ CONTRACT tracelytics : public contract {
                           const std::string& companyId,
                           const std::string& name,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& legalName,
                           const optional<std::string>& country,
                           const optional<std::string>& contact,
@@ -47,9 +45,9 @@ CONTRACT tracelytics : public contract {
                           const std::string& toCompany,
                           const time_point& startTime,
                           const std::string& type,
-                          const std::map<std::string, ProductQuantity>& cargo,
+                          std::map<std::string, ProductQuantity>& cargo,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<time_point>& endTime,
                           const optional<std::string>& shipper,
                           const optional<std::string>& driver,
@@ -61,19 +59,19 @@ CONTRACT tracelytics : public contract {
                           const std::string& site,
                           const std::string& itemId,
                           const std::string& product,
-                          const int64_t& quantity,
+                          const double& quantity,
                           std::map<std::string, std::string> metadata,
                           const std::string& action,
                           const std::string& actionId,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& version);
     ACTION newmachine   ( const std::string& user,
                           const std::string& company,
                           const std::string& machineId,
                           const std::string& site,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
@@ -86,7 +84,7 @@ CONTRACT tracelytics : public contract {
                           const std::map<std::string, ProductQuantity>& inputs,
                           const std::map<std::string, ProductQuantity>& outputs,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<time_point>& endTime,
                           const optional<std::string>& machine,
                           const optional<std::string>& status,
@@ -97,10 +95,10 @@ CONTRACT tracelytics : public contract {
                           const std::string& productId,
                           const std::string& name,
                           const std::string& uom,
-                          const int64_t& defaultPrice,
+                          const double& defaultPrice,
                           const std::string& defaultCurrency,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& image,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
@@ -110,7 +108,7 @@ CONTRACT tracelytics : public contract {
                           const std::vector<ProductQuantity>& inputs,
                           const std::vector<ProductQuantity>& outputs,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
@@ -120,7 +118,7 @@ CONTRACT tracelytics : public contract {
                           const std::string& siteCompany,
                           const bool& tracked,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& address,
                           const optional<std::string>& contact,
@@ -132,7 +130,7 @@ CONTRACT tracelytics : public contract {
                           const std::vector<std::string>& permissions,
                           const std::vector<std::string>& certifications,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<public_key>& key,
                           const optional<std::string>& firstName,
                           const optional<std::string>& lastName,
@@ -146,7 +144,7 @@ CONTRACT tracelytics : public contract {
                           const std::string& company,
                           const std::string& companyId,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& legalName,
                           const optional<std::string>& country,
@@ -163,9 +161,9 @@ CONTRACT tracelytics : public contract {
                           const std::string& company,
                           const std::string& deliveryId,
                           const std::string& route,
-                          const std::map<std::string, ProductQuantity>& cargoDeltas,
+                          std::map<std::string, ProductQuantity>& cargoDeltas,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
 
                           const optional<std::string>& toSite,
                           const optional<std::string>& toCompany,
@@ -184,16 +182,17 @@ CONTRACT tracelytics : public contract {
                           const std::string& action,
                           const std::string& actionId,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
-                          const optional<int64_t>& quantity,
-                          const optional<int64_t>& delta,
+                          const std::map<std::string, std::string>& data,
+                          const optional<double>& quantity,
+                          const optional<double>& delta,
                           const optional<std::string>& product,
+                          const optional<std::string>& delivery,
                           const optional<std::string>& version);
     ACTION editmachine  ( const std::string& user,
                           const std::string& company,
                           const std::string& machineId,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& site,
                           const optional<std::string>& name,
                           const optional<std::string>& description,
@@ -204,7 +203,7 @@ CONTRACT tracelytics : public contract {
                           const std::map<std::string, ProductQuantity>& inputDeltas,
                           const std::map<std::string, ProductQuantity>& outputDeltas,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<time_point>& startTime,
                           const optional<time_point>& endTime,
                           const optional<std::string>& machine,
@@ -215,11 +214,11 @@ CONTRACT tracelytics : public contract {
                           const std::string& company,
                           const std::string& productId,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
 
                           const optional<std::string>& name,
                           const optional<std::string>& uom,
-                          const optional<int64_t>& defaultPrice,
+                          const optional<double>& defaultPrice,
                           const optional<std::string>& defaultCurrency,
                           const optional<std::string>& image,
                           const optional<std::string>& description,
@@ -230,7 +229,7 @@ CONTRACT tracelytics : public contract {
                           const std::vector<ProductQuantity>& inputs,
                           const std::vector<ProductQuantity>& outputs,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& description,
                           const optional<std::string>& version);
@@ -239,7 +238,7 @@ CONTRACT tracelytics : public contract {
                           const std::string& siteId,
                           const bool& tracked,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<std::string>& name,
                           const optional<std::string>& address,
                           const optional<std::string>& contact,
@@ -251,7 +250,7 @@ CONTRACT tracelytics : public contract {
                           const std::vector<std::string>& permissions,
                           const std::vector<std::string>& certifications,
                           const time_point& timestamp,
-                          const std::map<std::string, all_type>& data,
+                          const std::map<std::string, std::string>& data,
                           const optional<public_key>& key,
                           const optional<std::string>& firstName,
                           const optional<std::string>& lastName,
@@ -304,21 +303,6 @@ CONTRACT tracelytics : public contract {
                           const std::string& userId,
                           const time_point&  timestamp);
 
-    // Logging
-    ACTION loginventory ( const std::string& user,
-                          const std::string& company,
-                          const std::string& item,
-                          const std::string& site,
-                          const std::string& product,
-                          std::map<std::string, std::string> metadata,
-                          const std::string& action,
-                          const std::string& parentAction,
-                          const std::string& parentActionId,
-                          const time_point&  timestamp,
-                          const std::string& version,
-                          const int64_t&     oldQuantity,
-                          const int64_t&     newQuantity);
-
     ACTION cleartable (const std::string& tableName);
     ACTION clearall ();
 
@@ -339,8 +323,24 @@ CONTRACT tracelytics : public contract {
       std::string company,
       std::string entity,
       std::string action,
-      std::map<std::string, all_type> args, std::map<std::string, all_type> metadata
+      std::map<std::string, std::string> data
     );
+
+    // Logging
+    ACTION loginventory ( const std::string& user,
+                          const std::string& company,
+                          const std::string& item,
+                          const std::string& site,
+                          const std::string& product,
+                          const std::string& delivery,
+                          std::map<std::string, std::string> metadata,
+                          const std::string& action,
+                          const std::string& parentAction,
+                          const std::string& parentActionId,
+                          const time_point&  timestamp,
+                          const std::string& version,
+                          const double&     oldQuantity,
+                          const double&     newQuantity);
 
     // Action wrappers
     using loginventory_action = action_wrapper<name("loginventory"), &tracelytics::loginventory>;
@@ -366,14 +366,14 @@ CONTRACT tracelytics : public contract {
       std::string fax;
       time_point customerSince;
       int64_t currentClient = 0;
-      std::string status;
+      std::string status = DeliveryStatus::LOADING;
       std::string description;
       std::string version = "0.0.1";
       std::string createdBy;
       std::string updatedBy;
       time_point createdAt;
       time_point updatedAt;
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t primary_key() const { return index;             };
       checksum256 by_id()    const { return SHA256(companyId); };
@@ -400,7 +400,7 @@ CONTRACT tracelytics : public contract {
       time_point createdAt;
       time_point updatedAt;
       std::map<std::string, ProductQuantity> cargo;
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t primary_key() const { return index; };
       std::string id() const { return deliveryId; };
@@ -408,9 +408,9 @@ CONTRACT tracelytics : public contract {
       checksum256 by_id()                       const { return SHA256(deliveryId                                    ); };
       checksum256 by_route()                    const { return SHA256(deliveryId  + ";" + route                     ); };
       checksum256 by_from_company_site_status() const { return SHA256(fromCompany + ";" + fromSite + ";" + status   ); }; // Raptor Site A -> * && (Status)
-      checksum256 by_to_company_site_status()   const { return SHA256(toCompany   + ";" + toSite   + ";" + status   ); };  // * -> Raptor Site A && (Status)
-      checksum256 by_from_to_site()             const { return SHA256(fromCompany + ";" + fromSite + ";" + toSite   ); };  // Raptor -> Supply Site A
-      checksum256 by_to_from_site()             const { return SHA256(toCompany   + ";" + toSite   + ";" + fromSite ); };  // Supply Site A -> Raptor
+      checksum256 by_to_company_site_status()   const { return SHA256(toCompany   + ";" + toSite   + ";" + status   ); }; // * -> Raptor Site A && (Status)
+      checksum256 by_from_to_site()             const { return SHA256(fromCompany + ";" + fromSite + ";" + toSite   ); }; // Raptor -> Supply Site A
+      checksum256 by_to_from_site()             const { return SHA256(toCompany   + ";" + toSite   + ";" + fromSite ); }; // Supply Site A -> Raptor
       checksum256 by_from_to_company()          const { return SHA256(fromCompany + ";" + toCompany                 ); }; // Raptor <-> Supplier || Raptor <-> Raptor
 
       checksum256 by_from_site()                const { return SHA256(fromCompany + ";" + fromSite                  ); }; // Raptor Site A -> *
@@ -428,23 +428,25 @@ CONTRACT tracelytics : public contract {
       std::string item;
       std::string site;
       std::string product;
+      std::string delivery;
       std::map<std::string, std::string> metadata;
       std::string action;
       std::string parentAction;
       std::string parentActionId;
       time_point timestamp;
-      int64_t oldQuantity;
-      int64_t newQuantity;
-      int64_t delta;
+      double oldQuantity;
+      double newQuantity;
+      double delta;
       checksum256 txid;
       std::string version = "0.0.1";
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t primary_key()                  const { return index;                                             };
       checksum256 by_item()                   const { return SHA256(company + ";" + item);                      };
       checksum256 by_company()                const { return SHA256(company);                                   };
       checksum256 by_site()                   const { return SHA256(company + ";" + site);                      };
       checksum256 by_product()                const { return SHA256(company + ";" + product);                   };
+      checksum256 by_delivery()               const { return SHA256(delivery);                                  };
       checksum256 by_user()                   const { return SHA256(company + ";" + user);                      };
       checksum256 by_site_and_product()       const { return SHA256(company + ";" + site + ";" + product);      };
       checksum256 by_parent_action_id()       const { return SHA256(company + ";" + parentActionId);            };
@@ -456,22 +458,23 @@ CONTRACT tracelytics : public contract {
       std::string site;
       std::string itemId;
       std::string product;
-      int64_t     quantity;
+      double     quantity;
+      std::string delivery;
       std::string createdBy;
       std::string updatedBy;
       time_point createdAt;
       time_point updatedAt;
       std::map<std::string, std::string> metadata;
       std::string version = "0.0.1";
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t primary_key() const { return index; };
 
-      checksum256 by_site_and_item()    const { return SHA256(company + ";" + site + ";" + itemId);  }; // Specific item at a single site (UNIQUE)
-      checksum256 by_company_and_id()   const { return SHA256(company + ";" + itemId);               }; // Specific item across all sites of a company
+      checksum256 by_id()               const { return SHA256(itemId);                               }; // Specific item (UNIQUE)
       checksum256 by_company()          const { return SHA256(company);                              }; // All items across a company
       checksum256 by_site()             const { return SHA256(company + ";" + site);                 }; // All items at a specific site
       checksum256 by_product()          const { return SHA256(company + ";" + product);              }; // All items matching product at company
+      checksum256 by_delivery()         const { return SHA256(delivery);                             }; // By the creator of the item
       checksum256 by_site_and_product() const { return SHA256(company + ";" + site + ";" + product); }; // All items matching product at site
       checksum256 by_creator()          const { return SHA256(company + ";" + createdBy);            }; // By the creator of the item
     };
@@ -489,7 +492,7 @@ CONTRACT tracelytics : public contract {
       time_point updatedAt;
       std::string version = "0.0.1";
       std::vector<std::string> certifications;
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t    primary_key()       const { return index;                             };
       checksum256 by_company_and_id() const { return SHA256(company + ";" + machineId); };
@@ -515,7 +518,7 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::map<std::string, ProductQuantity> inputs;
       std::map<std::string, ProductQuantity> outputs;
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t    primary_key()       const { return index;                             };
       std::string id()                const { return processId;                         };
@@ -538,14 +541,14 @@ CONTRACT tracelytics : public contract {
       std::string uom;
       std::string image;
       std::string description;
-      int64_t defaultPrice;
+      double defaultPrice;
       std::string defaultCurrency;
       std::string createdBy;
       std::string updatedBy;
       time_point createdAt;
       time_point updatedAt;
       std::string version = "0.0.1";
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t    primary_key() const { return index;      };
       checksum256 by_id()       const { return SHA256(productId); };
@@ -563,7 +566,7 @@ CONTRACT tracelytics : public contract {
       std::string version = "0.0.1";
       std::vector<ProductQuantity> inputs;
       std::vector<ProductQuantity> outputs;
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t    primary_key()       const { return index;                            };
       checksum256 by_company_and_id() const { return SHA256(company + ";" + recipeId); };
@@ -583,7 +586,7 @@ CONTRACT tracelytics : public contract {
       time_point createdAt;
       time_point updatedAt;
       std::string version = "0.0.1";
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t    primary_key() const { return index;           };
       checksum256 by_id()       const { return SHA256(siteId);  };
@@ -607,7 +610,7 @@ CONTRACT tracelytics : public contract {
       time_point createdAt;
       time_point updatedAt;
       std::string version = "0.0.1";
-      std::map<std::string, all_type> data;
+      std::map<std::string, std::string> data;
 
       uint64_t   primary_key()             const { return index;                                              };
       checksum256 by_id()                  const { return SHA256(userId);                                     };
@@ -624,7 +627,6 @@ CONTRACT tracelytics : public contract {
                               (certifications)(description)(createdBy)(updatedBy)(createdAt)
                               (updatedAt)(version)(data) )
     };
-
 
     typedef multi_index<eosio::name("company"), Company,
       indexed_by<name("byid"), const_mem_fun<Company, checksum256, &Company::by_id>>
@@ -649,17 +651,18 @@ CONTRACT tracelytics : public contract {
       indexed_by<name("bycompany"),    const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_company>>,
       indexed_by<name("bysite"),       const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_site>>,
       indexed_by<name("byproduct"),    const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_product>>,
+      indexed_by<name("bydelivery"),   const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_delivery>>,
       indexed_by<name("byuser"),       const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_user>>,
       indexed_by<name("bysiteprod"),   const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_site_and_product>>,
       indexed_by<name("byparentid"),   const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_parent_action_id>>,
       indexed_by<name("byuserparent"), const_mem_fun<InventoryLog, checksum256, &InventoryLog::by_user_and_parent_action>>
     > inventory_log_table;
     typedef multi_index<eosio::name("item"), Item,
-      indexed_by<name("bysiteitem"),  const_mem_fun<Item, checksum256, &Item::by_site_and_item>>,
-      indexed_by<name("bycompandid"), const_mem_fun<Item, checksum256, &Item::by_company_and_id>>,
+      indexed_by<name("byid"),        const_mem_fun<Item, checksum256, &Item::by_id>>,
       indexed_by<name("bycompany"),   const_mem_fun<Item, checksum256, &Item::by_company>>,
       indexed_by<name("bysite"),      const_mem_fun<Item, checksum256, &Item::by_site>>,
       indexed_by<name("byproduct"),   const_mem_fun<Item, checksum256, &Item::by_product>>,
+      indexed_by<name("bydelivery"),  const_mem_fun<Item, checksum256, &Item::by_delivery>>,
       indexed_by<name("bysiteprod"),  const_mem_fun<Item, checksum256, &Item::by_site_and_product>>,
       indexed_by<name("bycreator"),   const_mem_fun<Item, checksum256, &Item::by_creator>>
     > item_table;
@@ -714,33 +717,46 @@ CONTRACT tracelytics : public contract {
     void verify_auth(std::string company, std::string username, std::string entity, std::string action, std::string verifydata);
     std::vector<std::string> split(std::string str, std::string token);
     std::string to_hex(const char* d, uint32_t s);
+    std::string checksum_to_hex(const checksum256& cs);
     static uint64_t truncate_sha256_to_uint64(const checksum256& sha256);
 
-    void upsertitem(
+    inline void upsertitem(
       const std::string& user,
       const std::string& company,
       const std::string& site,
       const std::string& item,
       const std::string& product,
-      const int64_t& delta,
+      const double& delta,
       std::map<std::string, std::string> metadata,
       const std::string& action,
       const std::string& actionId,
       const time_point& timestamp
     );
 
-    template <typename T>
-    void processcargo (
-      T& entity,
+    Site check_site_exists (const std::string& company, const std::string& site);
+
+    // Process
+    inline void processcargo (
+      Process& entity,
       std::map<std::string, ProductQuantity>& cargo,
       const std::map<std::string, ProductQuantity>& cargoDeltas,
       const std::string& user,
       const std::string& company,
       const std::string& action,
-      const std::string& type,
-      const bool& skipUpsert
+      const std::string& activity
     );
-    Site check_site_exists (const std::string& company, const std::string& site);
+    inline InventoryDelta inventoryDeltaForCargo (
+      const Process& entity,
+      const ProductQuantity& productAndQuantity,
+      const std::string& activity
+    );
+    // Delivery
+    inline void processDelivery (
+      Delivery& entity,
+      std::map<std::string, ProductQuantity>& cargo,
+      const std::string& activity,
+      const std::string& deliveryAction
+    );
 };
 
 namespace Checksum
@@ -753,5 +769,5 @@ namespace Checksum
   inline eosio::checksum256 SITE    (std::string siteId)                         { return tracelytics::SHA256(siteId); }
   inline eosio::checksum256 USER    (std::string userId)                         { return tracelytics::SHA256(userId); }
   inline eosio::checksum256 DELIVERY(std::string deliveryId, std::string route)  { return tracelytics::SHA256(deliveryId + ";" + route); }
-  inline eosio::checksum256 ITEM    (std::string company, std::string site, std::string itemId) { return tracelytics::SHA256(company + ";" + site + ";" + itemId); }
+  inline eosio::checksum256 ITEM    (std::string itemId)                         { return tracelytics::SHA256(itemId); }
 }

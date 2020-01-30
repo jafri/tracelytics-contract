@@ -10,7 +10,7 @@ void tracelytics::newrecipe (
     const std::vector<ProductQuantity>& inputs,
     const std::vector<ProductQuantity>& outputs,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& description,
@@ -61,7 +61,7 @@ void tracelytics::editrecipe (
     const std::vector<ProductQuantity>& inputs,
     const std::vector<ProductQuantity>& outputs,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& description,
@@ -81,7 +81,11 @@ void tracelytics::editrecipe (
     auto recipes_bycompandid = _recipes.get_index<eosio::name("bycompandid")>();
     auto recipe = recipes_bycompandid.find(Checksum::RECIPE(company, recipeId));
     check(recipe != recipes_bycompandid.end(), "recipe does not exist.");
-    check(company == recipe->company && recipeId == recipe->recipeId, "recipe mismatch");
+    check(recipeId == recipe->recipeId, "recipe mismatch");
+
+    if (user != ADMIN) {
+        check(company == recipe->company, "only employees of " + recipe->company + " can edit the recipe.");
+    }
 
     // Edit recipe
     recipes_bycompandid.modify(recipe, get_self(), [&](auto& r) {

@@ -13,7 +13,7 @@ void tracelytics::newprocess (
     const std::map<std::string, ProductQuantity>& inputs,
     const std::map<std::string, ProductQuantity>& outputs,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<time_point>& endTime,
     const optional<std::string>& machine,
@@ -66,7 +66,7 @@ void tracelytics::newprocess (
 
         // New process, so we substract inputs from our site
         std::map<std::string, ProductQuantity> emptyDeltas;
-        processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActions::START_PROCESS, false);
+        processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActivity::START_PROCESS);
 
         // Process immediately
         if (type == ProcessType::SPLIT || type == ProcessType::MERGE || type == ProcessType::SCRAP || type == ProcessType::ADJUSTMENT) {
@@ -74,8 +74,11 @@ void tracelytics::newprocess (
             if (!endTime) {
                 b.endTime = timestamp;
             }
+        }
 
-            processcargo(b, b.inputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActions::FINISH_PROCESS, false);
+        // Process immediately
+        if (b.status == ProcessStatus::PROCESSED) {
+            processcargo(b, b.outputs, emptyDeltas, user, company, Actions::NEW_PROCESS, ProcessActivity::FINISH_PROCESS);
         }
     });
 }
@@ -90,7 +93,7 @@ void tracelytics::editprocess (
     const std::map<std::string, ProductQuantity>& inputDeltas,
     const std::map<std::string, ProductQuantity>& outputDeltas,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<time_point>& startTime,
     const optional<time_point>& endTime,
@@ -111,7 +114,13 @@ void tracelytics::editprocess (
     auto processes_bycompandid = _processes.get_index<eosio::name("bycompandid")>();
     auto process = processes_bycompandid.find(Checksum::PROCESS(company, processId));
     check(process != processes_bycompandid.end(), "process does not exist.");
-    check(company == process->company && processId == process->processId, "process mismatch");
+    check(processId == process->processId, "process mismatch");
+
+    if (user != ADMIN) {
+        check(company == process->company, "only employees of " + process->company + " can edit the process.");
+        check(process->status != ProcessStatus::PROCESSED, "cannot edit a processed process");
+        check(process->status != ProcessStatus::CANCELLED, "cannot edit a cancelled process");
+    }
 
     // Edit process
     processes_bycompandid.modify(process, get_self(), [&](auto& b) {
@@ -131,16 +140,16 @@ void tracelytics::editprocess (
 
         // Edit deltas
         if (inputDeltas.size() > 0) {
-            processcargo(b, b.inputs, inputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::EDIT_INPUTS, false);
+            processcargo(b, b.inputs, inputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActivity::EDIT_INPUTS);
         }
         if (outputDeltas.size() > 0) {
-            processcargo(b, b.outputs, outputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::EDIT_OUTPUTS, true); // NOTE TRUE, TO SKIP UPSERT ON OUTPUTS
+            processcargo(b, b.outputs, outputDeltas, user, company, Actions::EDIT_PROCESS, ProcessActivity::EDIT_OUTPUTS);
         }
 
         // Update inventory if processed
         if (justProcessed) {
           std::map<std::string, ProductQuantity> emptyDeltas;
-          processcargo(b, b.outputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::FINISH_PROCESS, false);
+          processcargo(b, b.outputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActivity::FINISH_PROCESS);
         }
     });
 }
@@ -184,7 +193,7 @@ void tracelytics::delprocess (
 
             // Refund
             std::map<std::string, ProductQuantity> emptyDeltas;
-            processcargo(b, b.inputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActions::FINISH_PROCESS, false);
+            processcargo(b, b.inputs, emptyDeltas, user, company, Actions::EDIT_PROCESS, ProcessActivity::FINISH_PROCESS);
         });
     } else {
         processes_bycompandid.erase(process);

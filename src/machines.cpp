@@ -9,7 +9,7 @@ void tracelytics::newmachine (
     const std::string& machineId,
     const std::string& site,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& description,
@@ -65,7 +65,7 @@ void tracelytics::editmachine (
     const std::string& company,
     const std::string& machineId,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& site,
     const optional<std::string>& name,
@@ -84,7 +84,11 @@ void tracelytics::editmachine (
     auto machines_bycompandid = _machines.get_index<eosio::name("bycompandid")>();
     auto machine = machines_bycompandid.find(Checksum::MACHINE(company, machineId));
     check(machine != machines_bycompandid.end(), "machine does not exist.");
-    check(company == machine->company && machineId == machine->machineId, "machine mismatch");
+    check(machineId == machine->machineId, "machine mismatch");
+
+    if (user != ADMIN) {
+        check(company == machine->company, "only employees of " + machine->company + " can edit the machine.");
+    }
 
     // Edit Machine
     machines_bycompandid.modify(machine, get_self(), [&](auto& m) {

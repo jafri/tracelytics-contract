@@ -11,7 +11,7 @@ void tracelytics::newsite (
     const bool& tracked,
 
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& address,
@@ -68,7 +68,7 @@ void tracelytics::editsite (
     const std::string& siteId,
     const bool& tracked,
     const time_point& timestamp,
-    const std::map<std::string, all_type>& data,
+    const std::map<std::string, std::string>& data,
 
     const optional<std::string>& name,
     const optional<std::string>& address,
@@ -89,7 +89,10 @@ void tracelytics::editsite (
     auto site = sites_byid.find(Checksum::SITE(siteId));
     check(site != sites_byid.end(), "site does not exist.");
     check(siteId == site->siteId, "site mismatch");
-    check(user == ADMIN || company == site->company, "only employees of " + site->company + " can edit the site.");
+
+    if (user != ADMIN && (site->tracked || tracked)) {
+        check(company == site->company, "only employees of " + site->company + " can edit the tracked site.");
+    }
 
     // Edit Site
     sites_byid.modify(site, get_self(), [&](auto& s) {

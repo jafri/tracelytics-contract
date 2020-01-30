@@ -1,103 +1,77 @@
 #pragma once
 
-template <typename T>
-void tracelytics::processcargo (
-  T& entity,
+void tracelytics::processDelivery (
+  Delivery& entity,
   std::map<std::string, ProductQuantity>& cargo,
-  const std::map<std::string, ProductQuantity>& cargoDeltas,
-  const std::string& user,
-  const std::string& company,
-  const std::string& action,
-  const std::string& type,
-  const bool& skipUpsert
+  const std::string& activity,
+  const std::string& deliveryAction
 ) {
-  auto mapOfItems = cargoDeltas.size() > 0 ? cargoDeltas : cargo;
+  // Item index
+  auto items_byid = _items.get_index<eosio::name("byid")>();
 
-  for( auto const& [item, productAndQuantity] : mapOfItems ) {
-    int64_t inventoryDelta = 0;
-    std::string inventoryDeltaSite;
-
-    // New Delivery/Process (No deltas)
-    if (cargoDeltas.size() == 0) {
-      if constexpr (std::is_same_v<T, Delivery>) {
-        // Send delivery: Raptor -> Supplier
-        if (type == DeliveryActions::SEND_DELIVERY) {
-          inventoryDelta = -productAndQuantity.quantity;
-          inventoryDeltaSite = entity.fromSite;
-        // Receive delivery: Supplier -> Raptor
-        } else if (type == DeliveryActions::RECEIVE_DELIVERY) {
-          inventoryDelta = productAndQuantity.quantity;
-          inventoryDeltaSite = entity.toSite;
-        } else if (type == DeliveryActions::CANCEL_DELIVERY) {
-          inventoryDelta = productAndQuantity.quantity;
-          inventoryDeltaSite = entity.fromSite;
-        } else {
-          check(false, "not of type send delivery, receive delivery or receive magic delivery.");
-        }
-      } else if constexpr (std::is_same_v<T, Process>) {
-        inventoryDeltaSite = entity.site;
-
-        // Start process -> CHARGE site
-        if (type == ProcessActions::START_PROCESS) {
-          inventoryDelta = -productAndQuantity.quantity;
-        // Finish process or merge or split -> CREDIT Site
-        } else if (type == ProcessActions::FINISH_PROCESS) {
-          inventoryDelta = productAndQuantity.quantity;
-        } else {
-          check(false, "not of type start process, finish process, split or merge");
-        }
-      } else {
-        check(false, "only delivery and process are allowed");
-      }
-    // Edit Delivery/Process (deltas)
-    } else {
-      /**
-       * inventoryDelta has 3 states
-       * Zero: No change
-       * Positive (+): +Inventory <- -Cargo (refund site)
-       * Negative (-): -Inventory -> +Cargo (charge site)
-       **/
-
-      // ALWAYS from site, as that is the one we refund to
-      if constexpr (std::is_same_v<T, Delivery>) {
-        inventoryDeltaSite = entity.fromSite;
-      } else if constexpr (std::is_same_v<T, Process>) {
-        inventoryDeltaSite = entity.site;
-      } else {
-        check(false, "only delivery and process are allowed");
-      }
-
-      // In cargo = POSITIVE/NEGATIVE DELTA
-      if (cargo.count(item) > 0) {
-        inventoryDelta = cargo[item].quantity - productAndQuantity.quantity;
-      // Not in cargo = NEGATIVE DELTA
-      } else {
-        inventoryDelta = -productAndQuantity.quantity;
-      }
-
-      // Update cargo with new quantity
-      if (productAndQuantity.quantity > 0) {
-        cargo[item] = productAndQuantity;
-      } else if (productAndQuantity.quantity == 0) {
-        cargo.erase(item);
-      } else {
-        // Ensure new quantity is zero or positive
-        check(false, "quantity in delivery must be zero or positive for item " + item);
-      }
+  for( auto const& [item, productAndQuantity] : cargo ) {
+    // 1. Edit the cargo
+    bool addCargo = activity == DeliveryActivity::EDIT_CARGO && productAndQuantity.quantity > 0;
+    bool removeCargo = activity == DeliveryActivity::EDIT_CARGO && productAndQuantity.quantity == 0;
+    if (addCargo) {
+      entity.cargo[item] = productAndQuantity;
+    } else if (removeCargo) {
+      entity.cargo.erase(item);
     }
 
-    // Skip if delta is 0, as nothing changes
-    if (!skipUpsert && inventoryDelta != 0) {
-      upsertitem(user,
-                company,
-                inventoryDeltaSite,
-                item,
-                productAndQuantity.product,
-                inventoryDelta,
-                productAndQuantity.metadata,
-                action,
-                entity.id(),
-                entity.updatedAt);
-    }
+    // 2. Validate item
+    // 2.1 Check item exists
+    auto existing_item = items_byid.find(Checksum::ITEM(item));
+    check(existing_item != items_byid.end(), "item " + item + " does not exist");
+    // 2.2 Items have a positive quantity
+    check(existing_item->quantity > 0, "item " + item + " has a quantity of " + to_string(existing_item->quantity) + ", must be positive to transfer.");
+    // 2.3 Check item quantity is transferring ALL or removing cargo
+    check(existing_item->quantity == productAndQuantity.quantity || removeCargo, "Trying to transfer " + to_string(productAndQuantity.quantity) + " of " + item + ", but must send " + to_string(existing_item->quantity) + ". Please split items into 2 tags if you wish to send partial quantity.");
+
+    // 3. Modify item to reflect state
+    items_byid.modify(existing_item, same_payer, [&](auto& i){
+      i.updatedAt = entity.updatedAt;
+      i.updatedBy = entity.updatedBy;
+
+      // 3a. Sending delivery/ Add to cargo: Move to delivery mode
+      if (activity == DeliveryActivity::SEND_DELIVERY || addCargo) {
+        i.company  = entity.fromCompany + " -> " + entity.toCompany;
+        i.site     = entity.fromSite + " -> " + entity.toSite;
+        i.delivery = entity.deliveryId;
+
+      // 3b. Receive delivery: Credit to receiver
+      } else if (activity == DeliveryActivity::RECEIVE_DELIVERY) {
+        i.company  = entity.toCompany;
+        i.site     = entity.toSite;
+        i.delivery = (std::string) "";
+
+      // 3c. Cancel delivery/Remove cargo: Credit to sender
+      } else if (activity == DeliveryActivity::CANCEL_DELIVERY || removeCargo) {
+        i.company  = entity.fromCompany;
+        i.site     = entity.fromSite;
+        i.delivery = (std::string) "";
+
+      // 3d. Error
+      } else {
+        check(false, "not of type send delivery, receive delivery or cancel delivery.");
+      }
+
+      // Log the change
+      tracelytics::loginventory_action loginventory_action( get_self(), {get_self(), "active"_n} );
+      loginventory_action.send(i.updatedBy,
+                               i.company,
+                               i.itemId,
+                               i.site,
+                               i.product,
+                               i.delivery,
+                               i.metadata,
+                               (std::string) "edititem",
+                               deliveryAction,
+                               entity.deliveryId,
+                               entity.updatedAt,
+                               i.version,
+                               i.quantity,
+                               i.quantity);
+    });
   }
 };

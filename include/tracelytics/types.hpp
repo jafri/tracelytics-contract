@@ -10,49 +10,52 @@
 #include <string>
 #include <variant>
 #include <type_traits>
-#include <any>
 
 using namespace eosio;
 using namespace std;
 
+struct InventoryDelta {
+  double     quantity;
+  std::string site;
+  std::string company;
+};
 struct ProductQuantityBase {
   std::string product;
-  int64_t     quantity;
+  double     quantity;
 };
 
 struct ProductQuantity: ProductQuantityBase {
   std::map<std::string, std::string> metadata;
 };
 
-#define all_type std::variant< \
-  char, \
-  uint16_t, \
-  int32_t, \
-  uint32_t, \
-  int64_t, \
-  uint64_t, \
-  int128_t, \
-  uint128_t, \
-  signed_int, \
-  unsigned_int, \
-  float, \
-  double, \
-  long double, \
-  time_point, \
-  time_point_sec, \
-  eosio::name, \
-  std::string, \
-  eosio::block_timestamp, \
-  eosio::checksum160, \
-  eosio::checksum256, \
-  eosio::checksum512, \
-  eosio::public_key, \
-  eosio::signature, \
-  eosio::symbol, \
-  eosio::symbol_code, \
-  eosio::asset, \
-  eosio::extended_asset \
->
+// #define all_type std::variant< \
+//   char, \
+//   uint16_t, \
+//   int32_t, \
+//   uint32_t, \
+//   int64_t, \
+//   uint64_t, \
+//   int128_t, \
+//   uint128_t, \
+//   signed_int, \
+//   unsigned_int, \
+//   double, \
+//   long double, \
+//   time_point, \
+//   time_point_sec, \
+//   eosio::name, \
+//   std::string, \
+//   eosio::block_timestamp, \
+//   eosio::checksum160, \
+//   eosio::checksum256, \
+//   eosio::checksum512, \
+//   eosio::public_key, \
+//   eosio::signature, \
+//   eosio::symbol, \
+//   eosio::symbol_code, \
+//   eosio::asset, \
+//   eosio::extended_asset \
+// >
 
 namespace ProcessStatus
 {
@@ -68,22 +71,13 @@ namespace ProcessType
   const std::string ADJUSTMENT = "adjustment";
   const std::string SCRAP      = "scrap";
 }
-namespace ProcessActions
+namespace ProcessActivity
 {
-  const std::string START_PROCESS          = "Start Process";
-  const std::string EDIT_INPUTS            = "Edit Inputs";
-  const std::string EDIT_OUTPUTS           = "Edit Outputs";
-  const std::string FINISH_PROCESS         = "Finish Process";
+  const std::string START_PROCESS  = "Start Process";
+  const std::string EDIT_INPUTS    = "Edit Inputs";
+  const std::string EDIT_OUTPUTS   = "Edit Outputs";
+  const std::string FINISH_PROCESS = "Finish Process";
 }
-
-
-namespace CargoMovementType
-{
-  const std::string CHARGE = "charge";
-  const std::string CREDIT = "credit";
-}
-
-
 
 namespace DeliveryStatus
 {
@@ -92,7 +86,13 @@ namespace DeliveryStatus
   const std::string SHIPPED   = "shipped";
   const std::string DELIVERED = "delivered";
 }
-namespace DeliveryActions
+
+namespace DeliveryType
+{
+  const std::string SEND    = "Send Delivery";
+  const std::string RECEIVE = "Receive Delivery";
+}
+namespace DeliveryActivity
 {
   const std::string SEND_DELIVERY    = "Send Delivery";
   const std::string EDIT_CARGO       = "Edit Cargo";

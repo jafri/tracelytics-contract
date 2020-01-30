@@ -8,8 +8,7 @@ void tracelytics::push(
     std::string company,
     std::string entity,
     std::string action,
-    std::map<std::string, all_type> args,
-    std::map<std::string, all_type> metadata
+    std::map<std::string, std::string> data
 ) {
     verify_auth(company, username, entity, action, verifydata);
     ec_verify(verifydata, sig, pk);

@@ -81,7 +81,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -171,7 +171,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -204,6 +204,10 @@
                     "type": "string"
                 },
                 {
+                    "name": "delivery",
+                    "type": "string"
+                },
+                {
                     "name": "metadata",
                     "type": "pair_string_string[]"
                 },
@@ -225,15 +229,15 @@
                 },
                 {
                     "name": "oldQuantity",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "newQuantity",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "delta",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "txid",
@@ -245,7 +249,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -275,7 +279,11 @@
                 },
                 {
                     "name": "quantity",
-                    "type": "int64"
+                    "type": "float64"
+                },
+                {
+                    "name": "delivery",
+                    "type": "string"
                 },
                 {
                     "name": "createdBy",
@@ -303,7 +311,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -361,7 +369,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -439,7 +447,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -473,7 +481,7 @@
                 },
                 {
                     "name": "defaultPrice",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "defaultCurrency",
@@ -501,7 +509,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -525,7 +533,7 @@
                 },
                 {
                     "name": "quantity",
-                    "type": "int64"
+                    "type": "float64"
                 }
             ]
         },
@@ -583,7 +591,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -645,7 +653,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -723,7 +731,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 }
             ]
         },
@@ -986,7 +994,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1068,7 +1076,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "toSite",
@@ -1146,18 +1154,22 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "quantity",
-                    "type": "int64?"
+                    "type": "float64?"
                 },
                 {
                     "name": "delta",
-                    "type": "int64?"
+                    "type": "float64?"
                 },
                 {
                     "name": "product",
+                    "type": "string?"
+                },
+                {
+                    "name": "delivery",
                     "type": "string?"
                 },
                 {
@@ -1188,7 +1200,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "site",
@@ -1238,7 +1250,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "startTime",
@@ -1288,7 +1300,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1300,7 +1312,7 @@
                 },
                 {
                     "name": "defaultPrice",
-                    "type": "int64?"
+                    "type": "float64?"
                 },
                 {
                     "name": "defaultCurrency",
@@ -1350,7 +1362,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1392,7 +1404,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1446,7 +1458,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "key",
@@ -1503,6 +1515,10 @@
                     "type": "string"
                 },
                 {
+                    "name": "delivery",
+                    "type": "string"
+                },
+                {
                     "name": "metadata",
                     "type": "pair_string_string[]"
                 },
@@ -1528,11 +1544,11 @@
                 },
                 {
                     "name": "oldQuantity",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "newQuantity",
-                    "type": "int64"
+                    "type": "float64"
                 }
             ]
         },
@@ -1562,7 +1578,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "legalName",
@@ -1664,7 +1680,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "endTime",
@@ -1718,7 +1734,7 @@
                 },
                 {
                     "name": "quantity",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "metadata",
@@ -1738,7 +1754,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "version",
@@ -1772,7 +1788,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1830,7 +1846,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "endTime",
@@ -1880,7 +1896,7 @@
                 },
                 {
                     "name": "defaultPrice",
-                    "type": "int64"
+                    "type": "float64"
                 },
                 {
                     "name": "defaultCurrency",
@@ -1892,7 +1908,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "image",
@@ -1938,7 +1954,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -1984,7 +2000,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "name",
@@ -2038,7 +2054,7 @@
                 },
                 {
                     "name": "data",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "type": "pair_string_string[]"
                 },
                 {
                     "name": "key",
@@ -2099,20 +2115,6 @@
             ]
         },
         {
-            "name": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset",
-            "base": "",
-            "fields": [
-                {
-                    "name": "key",
-                    "type": "string"
-                },
-                {
-                    "name": "value",
-                    "type": "variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset"
-                }
-            ]
-        },
-        {
             "name": "push",
             "base": "",
             "fields": [
@@ -2145,12 +2147,8 @@
                     "type": "string"
                 },
                 {
-                    "name": "args",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
-                },
-                {
-                    "name": "metadata",
-                    "type": "pair_string_variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset[]"
+                    "name": "data",
+                    "type": "pair_string_string[]"
                 }
             ]
         }
@@ -2164,152 +2162,152 @@
         {
             "name": "cleartable",
             "type": "cleartable",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Clear Table\nsummary: 'Clear Tabler'\nicon:\n---"
         },
         {
             "name": "delcompany",
             "type": "delcompany",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Company\nsummary: 'Delete Company'\nicon:\n---"
         },
         {
             "name": "deldelivery",
             "type": "deldelivery",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Delivery\nsummary: 'Delete Delivery'\nicon:\n---"
         },
         {
             "name": "delitem",
             "type": "delitem",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Item\nsummary: 'Delete Item'\nicon:\n---"
         },
         {
             "name": "delmachine",
             "type": "delmachine",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Machine\nsummary: 'Delete Machine'\nicon:\n---"
         },
         {
             "name": "delprocess",
             "type": "delprocess",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Process\nsummary: 'Delete Process'\nicon:\n---"
         },
         {
             "name": "delproduct",
             "type": "delproduct",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Product\nsummary: 'Delete Product'\nicon:\n---"
         },
         {
             "name": "delrecipe",
             "type": "delrecipe",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Recipe\nsummary: 'Delete Recipe'\nicon:\n---"
         },
         {
             "name": "delsite",
             "type": "delsite",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete Site\nsummary: 'Delete Site'\nicon:\n---"
         },
         {
             "name": "deluser",
             "type": "deluser",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Delete User\nsummary: 'Delete User'\nicon:\n---"
         },
         {
             "name": "editcompany",
             "type": "editcompany",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Company\nsummary: 'Edit Company'\nicon:\n---"
         },
         {
             "name": "editdelivery",
             "type": "editdelivery",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Delivery\nsummary: 'Edit Delivery'\nicon:\n---"
         },
         {
             "name": "edititem",
             "type": "edititem",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Item\nsummary: 'Edit Item'\nicon:\n---"
         },
         {
             "name": "editmachine",
             "type": "editmachine",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Machine\nsummary: 'Edit Machine'\nicon:\n---"
         },
         {
             "name": "editprocess",
             "type": "editprocess",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Process\nsummary: 'Edit Process'\nicon:\n---"
         },
         {
             "name": "editproduct",
             "type": "editproduct",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Product\nsummary: 'Edit Product'\nicon:\n---"
         },
         {
             "name": "editrecipe",
             "type": "editrecipe",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Recipe\nsummary: 'Edit Recipe'\nicon:\n---"
         },
         {
             "name": "editsite",
             "type": "editsite",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit Site\nsummary: 'Edit Site'\nicon:\n---"
         },
         {
             "name": "edituser",
             "type": "edituser",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Edit User\nsummary: 'Edit User'\nicon:\n---"
         },
         {
             "name": "loginventory",
             "type": "loginventory",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Log Inventory\nsummary: 'Log Inventory'\nicon:\n---"
         },
         {
             "name": "newcompany",
             "type": "newcompany",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Company\nsummary: 'New Company'\nicon:\n---"
         },
         {
             "name": "newdelivery",
             "type": "newdelivery",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Delivery\nsummary: 'New Delivery'\nicon:\n---"
         },
         {
             "name": "newitem",
             "type": "newitem",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Item\nsummary: 'New Item'\nicon:\n---"
         },
         {
             "name": "newmachine",
             "type": "newmachine",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Machine\nsummary: 'New Machine'\nicon:\n---"
         },
         {
             "name": "newprocess",
             "type": "newprocess",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Process\nsummary: 'New Process'\nicon:\n---"
         },
         {
             "name": "newproduct",
             "type": "newproduct",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Product\nsummary: 'New Product'\nicon:\n---"
         },
         {
             "name": "newrecipe",
             "type": "newrecipe",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Recipe\nsummary: 'New Recipe'\nicon:\n---"
         },
         {
             "name": "newsite",
             "type": "newsite",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New Site\nsummary: 'New Site'\nicon:\n---"
         },
         {
             "name": "newuser",
             "type": "newuser",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: New User\nsummary: 'New User'\nicon:\n---"
         },
         {
             "name": "push",
             "type": "push",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Push\nsummary: 'Push'\nicon:\n---"
         }
     ],
     "tables": [
@@ -2385,10 +2383,5 @@
         }
     ],
     "ricardian_clauses": [],
-    "variants": [
-        {
-            "name": "variant_int8_uint16_int32_uint32_int64_uint64_int128_uint128_varint32_varuint32_float32_float64_float128_time_point_time_point_sec_name_string_block_timestamp_type_checksum160_checksum256_checksum512_public_key_signature_symbol_symbol_code_asset_extended_asset",
-            "types": ["int8","uint16","int32","uint32","int64","uint64","int128","uint128","varint32","varuint32","float32","float64","float128","time_point","time_point_sec","name","string","block_timestamp_type","checksum160","checksum256","checksum512","public_key","signature","symbol","symbol_code","asset","extended_asset"]
-        }
-    ]
+    "variants": []
 }
