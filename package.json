@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@jafri/eosjs2": "^20.0.1-e34c16e.179",
-    "elliptic": "^6.5.2",
+    "elliptic": "^6.5.4",
     "lamington": "^1.0.0-alpha.4"
   },
   "devDependencies": {
